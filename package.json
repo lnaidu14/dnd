@@ -3,20 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
     "build": "next build",
+    "init-db": "node scripts/initDb.js",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "axios": "^1.13.1",
+    "next": "16.0.1",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.9.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "next": "16.0.1"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
-    "eslint-config-next": "16.0.1"
+    "eslint-config-next": "16.0.1",
+    "nodemon": "^3.1.10",
+    "tailwindcss": "^4"
   }
 }

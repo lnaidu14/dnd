@@ -1,0 +1,51 @@
+.campaignGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill);
+  grid-auto-flow: row;
+  gap: 1rem;
+  width: 100%;
+}
+
+.campaignCard {
+  background: var(--surface);
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.campaignCard:hover {
+  transform: translateY(-2px);
+}
+
+.campaignActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.resumeButton {
+  padding: 0.5rem 1rem;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.deleteButton {
+  padding: 0.5rem;
+  background: var(--danger, #dc2626);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+  min-width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

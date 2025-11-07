@@ -1,0 +1,33 @@
+.homeContainer {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  height: 100%;
+  width: 100%;
+}
+
+.header {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  background-color: #111;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.footer {
+  flex: 0 0 auto;
+  padding: 1rem;
+  background-color: #111;
+  text-align: center;
+  width: 100%;
+}

@@ -1,0 +1,31 @@
+.tabNav {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--border);
+  width: 100%;
+  height: 100%;
+}
+
+.tab {
+  padding: 1rem 2rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tab:hover {
+  color: var(--text);
+  background: var(--surface-hover);
+}
+
+.activeTab {
+  color: var(--primary) !important;
+  border-bottom-color: var(--primary) !important;
+  background: var(--surface);
+}
