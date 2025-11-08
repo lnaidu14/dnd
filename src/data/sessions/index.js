@@ -11,16 +11,15 @@ export async function getSession(campaignId) {
 
 export async function createSession(campaignId, sessionData) {
   const db = await initDatabase();
-  const { dm_user_id, dm_name, player_count, connected_users } = sessionData;
+  const { dm_name, player_count, connected_users } = sessionData;
 
   await db.run(`
     INSERT INTO sessions 
-    (id, campaign_id, dm_user_id, dm_name, player_count, connected_users, updated_at)
+    (id, campaign_id, dm_name, player_count, connected_users, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
   `, [
     campaignId,
     campaignId,
-    dm_user_id,
     dm_name,
     player_count,
     JSON.stringify(connected_users)
@@ -32,18 +31,16 @@ export async function createSession(campaignId, sessionData) {
 
 export async function updateSession(campaignId, sessionData) {
   const db = await initDatabase();
-  const { dm_user_id, dm_name, player_count, connected_users } = sessionData;
+  const {dm_name, player_count, connected_users } = sessionData;
 
   await db.run(`
     UPDATE sessions
-    SET dm_user_id = ?,
-        dm_name = ?,
+    SET dm_name = ?,
         player_count = ?,
         connected_users = ?,
         updated_at = datetime('now')
     WHERE campaign_id = ?
   `, [
-    dm_user_id,
     dm_name,
     player_count,
     JSON.stringify(connected_users),

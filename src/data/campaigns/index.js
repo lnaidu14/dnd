@@ -2,48 +2,56 @@ import { initDatabase } from "../db/init"
 
 export async function createCampaign(campaignData) {
   const db = await initDatabase();
-  const { id, name, description, dm_id } = campaignData;
+  const { id, name, description } = campaignData;
 
-  await db.run(`
-    INSERT INTO campaigns (id, name, description, dm_id, created_at, updated_at)
+  await db.run(
+    `
+    INSERT INTO campaigns (id, name, description, created_at, updated_at)
     VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))
-  `, [id, name, description, dm_id]);
-
-  const newCampaign = await db.get(
-    `SELECT * FROM campaigns WHERE id = ?`,
-    [id]
+  `,
+    [id, name, description]
   );
 
+  const newCampaign = await db.get(`SELECT * FROM campaigns WHERE id = ?`, [
+    id,
+  ]);
+
   await db.close();
-  return newCampaign
+  return newCampaign;
 }
 
 export async function getAllCampaigns() {
   const db = await initDatabase();
-  const campaigns = await db.all('SELECT * FROM campaigns ORDER BY created_at DESC');
+  const campaigns = await db.all(
+    "SELECT * FROM campaigns ORDER BY created_at DESC"
+  );
   await db.close();
   return campaigns;
 }
 
 export async function getCampaignById(campaignId) {
   const db = await initDatabase();
-  const campaign = await db.get('SELECT * FROM campaigns WHERE id = ?', [campaignId]);
+  const campaign = await db.get("SELECT * FROM campaigns WHERE id = ?", [
+    campaignId,
+  ]);
   await db.close();
   return campaign;
 }
 
 export async function updateCampaign(campaignId, campaignData) {
   const db = await initDatabase();
-  const { name, description, dm_id } = campaignData;
+  const { name, description } = campaignData;
 
-  await db.run(`
+  await db.run(
+    `
     UPDATE campaigns
     SET name = ?,
         description = ?,
-        dm_id = ?,
         updated_at = datetime('now')
     WHERE id = ?
-  `, [name, description, dm_id, campaignId]);
+  `,
+    [name, description, campaignId]
+  );
 
   await db.close();
 }

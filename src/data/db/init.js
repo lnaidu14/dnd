@@ -12,7 +12,6 @@ export async function initDatabase() {
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       description TEXT,
-      dm_id TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -20,7 +19,6 @@ export async function initDatabase() {
     CREATE TABLE IF NOT EXISTS characters (
       id TEXT PRIMARY KEY,
       campaign_id TEXT,
-      player_id TEXT,
       name TEXT NOT NULL,
       class TEXT NOT NULL,
       level INTEGER DEFAULT 1,
@@ -32,8 +30,6 @@ export async function initDatabase() {
     CREATE TABLE IF NOT EXISTS sessions (
       id TEXT PRIMARY KEY,
       campaign_id TEXT NOT NULL,
-      dm_user_id TEXT,
-      dm_name TEXT,
       player_count INTEGER DEFAULT 0,
       connected_users TEXT DEFAULT '[]',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
