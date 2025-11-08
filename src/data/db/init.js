@@ -3,7 +3,7 @@ import { open } from 'sqlite';
 
 export async function initDatabase() {
   let db = await open({
-    filename: "./data/campaign_data.db",
+    filename: "../dnd/data/game_data.db",
     driver: sqlite3.Database,
   });
 

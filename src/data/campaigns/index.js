@@ -7,7 +7,7 @@ export async function createCampaign(campaignData) {
   await db.run(
     `
     INSERT INTO campaigns (id, name, description, created_at, updated_at)
-    VALUES (?, ?, ?, ?, datetime('now'), datetime('now'))
+    VALUES (?, ?, ?, datetime('now'), datetime('now'))
   `,
     [id, name, description]
   );
