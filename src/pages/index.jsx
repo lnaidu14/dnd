@@ -1,6 +1,6 @@
-import { ErrorBoundary, HomeScreen } from "../components";
-import { useState, useEffect, createContext } from "react"
-import axios from "axios"
+import { ErrorBoundary, HomeScreen, CampaignsList } from "../components";
+import { useState, useEffect, createContext } from "react";
+import axios from "axios";
 
 export const CampaignsContext = createContext({
   campaigns: [],
@@ -15,7 +15,7 @@ export default function Home() {
   useEffect(() => {
     const fetchCampaigns = async () => {
       try {
-        const response = await axios.get('/api/campaigns');
+        const response = await axios.get("/api/campaigns");
         setCampaigns(response.data.campaigns);
       } catch (err) {
         console.error(err);
@@ -29,12 +29,19 @@ export default function Home() {
 
   return (
     <CampaignsContext.Provider value={{ campaigns, setCampaigns }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%", width: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          height: "100%",
+          width: "100%",
+        }}
+      >
         <ErrorBoundary>
-          <HomeScreen />
+          <CampaignsList loading={loading} error={error} />
         </ErrorBoundary>
       </div>
     </CampaignsContext.Provider>
   );
 }
-
