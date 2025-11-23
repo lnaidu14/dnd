@@ -1,11 +1,11 @@
 import React from 'react'
-import { useContext, useState, useRef } from "react"
-import { CampaignsContext } from "../../pages"
+import { useContext, useEffect, useRef } from "react";
+import { CampaignsContext } from "../../pages";
 import styles from "./CampaignsList.module.css";
-import { Button } from 'primereact/button';
-import axios from "axios"
-import { Toast } from 'primereact/toast';
-import { useRouter } from "next/router";        
+import { Button } from "primereact/button";
+import axios from "axios";
+import { Toast } from "primereact/toast";
+import { useRouter } from "next/router";
 
 export default function CampaignsList({ loading, error }) {
   const { campaigns, setCampaigns } = useContext(CampaignsContext);
@@ -107,39 +107,35 @@ export default function CampaignsList({ loading, error }) {
           </p>
         ) : (
           <div className={styles.campaignGrid}>
-            {campaigns.map((c) => (
-              <div key={c.id} className={styles.campaignCard}>
-                <h3 className="text-lg font-semibold mb-1">{c.name}</h3>
-                <p className="text-gray-400 mb-2">
-                  {c.description || "No description available"}
-                </p>
-                <small className="block text-gray-500 mb-3">
-                  Created: {new Date(c.created_at).toLocaleDateString()}
-                </small>
+            {campaigns.map((c) => {
+              console.log("c: ", c);
+              return (
+                <div key={c.id} className={styles.campaignCard}>
+                  <h3 className="text-lg font-semibold mb-1">{c.name}</h3>
+                  <p className="text-gray-400 mb-2">
+                    {c.description || "No description available"}
+                  </p>
+                  <small className="block text-gray-500 mb-3">
+                    Created: {new Date(c.created_at).toLocaleDateString()}
+                  </small>
 
-                <div className="flex justify-between text-sm text-gray-300 mb-2">
-                  <span>👥 {c.player_count ?? 0} players</span>
-                  <span>
-                    {c.dm_name ? `🧙 DM: ${c.dm_name}` : "❌ No DM yet"}
-                  </span>
+                  <div className={styles.campaignActions}>
+                    <button
+                      className={`${styles.resumeButton} bg-green-600 hover:bg-green-700`}
+                      onClick={() => onJoinCampaign(c.id, c.name)}
+                    >
+                      Join
+                    </button>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => deleteCampaign(c.id, c.name)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-
-                <div className={styles.campaignActions}>
-                  <button
-                    className={`${styles.resumeButton} bg-green-600 hover:bg-green-700`}
-                    onClick={() => onJoinCampaign(c.id, c.name)}
-                  >
-                    Join
-                  </button>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => deleteCampaign(c.id, c.name)}
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
