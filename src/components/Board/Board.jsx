@@ -4,10 +4,12 @@ import { BoardControls } from '../';
 
 const CELL_SIZE = 60;
 
-export default function Board() {
-  const [gridVisible, setGridVisible] = useState(true);
-  const [snapToGrid, setSnapToGrid] = useState(true);
-  const [measurement, setMeasurement] = useState(null);
+export default function Board({
+  gridVisible,
+  snapToGrid,
+  measurement,
+  setMeasurement,
+}) {
   const [isMeasuring, setIsMeasuring] = useState(false);
   const [startPos, setStartPos] = useState(null);
   const [endPos, setEndPos] = useState(null);
@@ -18,7 +20,7 @@ export default function Board() {
       const { width, height } = boardRef.current.getBoundingClientRect();
       setDimensions({
         width: Math.ceil(width / CELL_SIZE) * CELL_SIZE,
-        height: Math.ceil(height / CELL_SIZE) * CELL_SIZE
+        height: Math.ceil(height / CELL_SIZE) * CELL_SIZE,
       });
     }
   }, []);
@@ -32,13 +34,13 @@ export default function Board() {
     return () => resizeObserver.disconnect();
   }, [updateDimensions]);
 
-  const toggleGrid = () => setGridVisible(prev => !prev);
-  
-  const toggleSnapToGrid = () => setSnapToGrid(prev => !prev);
+  const toggleGrid = () => setGridVisible((prev) => !prev);
+
+  const toggleSnapToGrid = () => setSnapToGrid((prev) => !prev);
 
   const generateGridLines = useCallback(() => {
     if (!gridVisible) return null;
-    
+
     const lines = [];
     const cols = Math.ceil(dimensions.width / CELL_SIZE);
     const rows = Math.ceil(dimensions.height / CELL_SIZE);
@@ -72,38 +74,44 @@ export default function Board() {
     return lines;
   }, [dimensions, gridVisible]);
 
-  const handleMouseMove = useCallback((e) => {
-    if (!isMeasuring || !startPos) return;
-    
-    const rect = boardRef.current.getBoundingClientRect();
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    
-    const snap = (value) => snapToGrid ? Math.round(value / CELL_SIZE) * CELL_SIZE : value;
-    
-    x = snap(x);
-    y = snap(y);
-    
-    setEndPos({ x, y });
-    
-    const dx = (x - startPos.x) / CELL_SIZE;
-    const dy = (y - startPos.y) / CELL_SIZE;
-    const distance = Math.sqrt(dx * dx + dy * dy).toFixed(1);
-    setMeasurement(distance);
-  }, [isMeasuring, snapToGrid, startPos]);
+  const handleMouseMove = useCallback(
+    (e) => {
+      if (!isMeasuring || !startPos) return;
+
+      const rect = boardRef.current.getBoundingClientRect();
+      let x = e.clientX - rect.left;
+      let y = e.clientY - rect.top;
+
+      const snap = (value) =>
+        snapToGrid ? Math.round(value / CELL_SIZE) * CELL_SIZE : value;
+
+      x = snap(x);
+      y = snap(y);
+
+      setEndPos({ x, y });
+
+      const dx = (x - startPos.x) / CELL_SIZE;
+      const dy = (y - startPos.y) / CELL_SIZE;
+      const squares = Math.sqrt(dx * dx + dy * dy);
+      const feet = (squares * 5).toFixed(1);
+      setMeasurement(feet);
+    },
+    [isMeasuring, snapToGrid, startPos, setEndPos, setMeasurement]
+  );
 
   const handleMouseDown = (e) => {
     if (e.button !== 0) return;
-    
+
     const rect = boardRef.current.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
-    
-    const snap = (value) => snapToGrid ? Math.round(value / CELL_SIZE) * CELL_SIZE : value;
-    
+
+    const snap = (value) =>
+      snapToGrid ? Math.round(value / CELL_SIZE) * CELL_SIZE : value;
+
     x = snap(x);
     y = snap(y);
-    
+
     setStartPos({ x, y });
     setEndPos({ x, y });
     setIsMeasuring(true);
@@ -118,28 +126,41 @@ export default function Board() {
         setEndPos(null);
       }, 2000);
     }
-  }, [isMeasuring]);
+  }, [isMeasuring, setMeasurement, setStartPos, setEndPos]);
 
   useEffect(() => {
     const board = boardRef.current;
     if (!board) return;
 
-    board.addEventListener('mousemove', handleMouseMove);
-    board.addEventListener('mouseup', handleMouseUp);
-    board.addEventListener('mouseleave', handleMouseUp);
+    board.addEventListener("mousemove", handleMouseMove);
+    board.addEventListener("mouseup", handleMouseUp);
+    board.addEventListener("mouseleave", handleMouseUp);
 
     return () => {
-      board.removeEventListener('mousemove', handleMouseMove);
-      board.removeEventListener('mouseup', handleMouseUp);
-      board.removeEventListener('mouseleave', handleMouseUp);
+      board.removeEventListener("mousemove", handleMouseMove);
+      board.removeEventListener("mouseup", handleMouseUp);
+      board.removeEventListener("mouseleave", handleMouseUp);
     };
   }, [handleMouseMove, handleMouseUp]);
 
   const renderMeasurement = useCallback(() => {
     if (!startPos || !endPos) return null;
-    
+
     return (
       <>
+        <circle
+          cx={startPos.x}
+          cy={startPos.y}
+          r={5}
+          className={styles.measurementStartDot}
+        />
+
+        <circle
+          cx={endPos.x}
+          cy={endPos.y}
+          r={5}
+          className={styles.measurementEndDot}
+        />
         <line
           x1={startPos.x}
           y1={startPos.y}
@@ -155,7 +176,7 @@ export default function Board() {
             className={styles.measurementText}
             textAnchor="middle"
           >
-            {measurement} sq
+            {measurement} ft
           </text>
         )}
       </>
@@ -164,7 +185,7 @@ export default function Board() {
 
   const renderGrid = useCallback(() => {
     if (!gridVisible) return null;
-    
+
     return (
       <>
         <pattern
@@ -188,22 +209,14 @@ export default function Board() {
 
   return (
     <div className={styles.boardContainer}>
-      <BoardControls
-        gridVisible={gridVisible}
-        toggleGrid={toggleGrid}
-        snapToGrid={snapToGrid}
-        toggleSnapToGrid={toggleSnapToGrid}
-        measurement={measurement}
-      />
-
       {/* Board */}
-      <div 
+      <div
         ref={boardRef}
         className={styles.board}
         onMouseDown={handleMouseDown}
-        style={{ cursor: isMeasuring ? 'crosshair' : 'default' }}
+        style={{ cursor: isMeasuring ? "crosshair" : "default" }}
       >
-        <svg 
+        <svg
           className={styles.gridSvg}
           width={dimensions.width}
           height={dimensions.height}

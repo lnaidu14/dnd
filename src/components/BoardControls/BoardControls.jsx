@@ -12,11 +12,11 @@ export default function BoardControls({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className={`${styles.controlsContainer} ${isOpen ? styles.open : ''}`}>
-      <button 
+    <div className={`${styles.controlsContainer} ${isOpen ? styles.open : ""}`}>
+      <button
         className={styles.toggleButton}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? 'Close settings' : 'Open settings'}
+        aria-label={isOpen ? "Close settings" : "Open settings"}
       >
         {isOpen ? <FiX size={20} /> : <FiSettings size={20} />}
       </button>
@@ -26,10 +26,10 @@ export default function BoardControls({
           <h3 className={styles.panelTitle}>Board Settings</h3>
           <div className={styles.controlGroup}>
             <label className={styles.toggle}>
-              <input 
-                type="checkbox" 
-                checked={gridVisible} 
-                onChange={toggleGrid} 
+              <input
+                type="checkbox"
+                checked={gridVisible}
+                onChange={toggleGrid}
               />
               <span className={styles.toggleSlider}></span>
               <span className={styles.toggleLabel}>
@@ -38,10 +38,10 @@ export default function BoardControls({
             </label>
 
             <label className={styles.toggle}>
-              <input 
-                type="checkbox" 
-                checked={snapToGrid} 
-                onChange={toggleSnapToGrid} 
+              <input
+                type="checkbox"
+                checked={snapToGrid}
+                onChange={toggleSnapToGrid}
               />
               <span className={styles.toggleSlider}></span>
               <span className={styles.toggleLabel}>
@@ -49,10 +49,10 @@ export default function BoardControls({
               </span>
             </label>
           </div>
-          
+
           {measurement && (
             <div className={styles.measurementDisplay}>
-              Distance: {measurement} squares
+              Distance: {measurement} ft
             </div>
           )}
         </div>

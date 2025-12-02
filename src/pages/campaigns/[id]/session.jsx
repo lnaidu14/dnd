@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import io from "socket.io-client";
-import { Board } from "@/components";
+import { Board, BoardControls } from "@/components";
 
 export default function SessionPage() {
   const router = useRouter();
@@ -12,6 +12,12 @@ export default function SessionPage() {
   const [playerCount, setPlayerCount] = useState(0);
   const [dmName, setDmName] = useState(null);
   const [sessionActive, setSessionActive] = useState(false);
+  const [gridVisible, setGridVisible] = useState(true);
+  const [snapToGrid, setSnapToGrid] = useState(true);
+  const [measurement, setMeasurement] = useState(null);
+
+  const toggleGrid = () => setGridVisible((prev) => !prev);
+  const toggleSnapToGrid = () => setSnapToGrid((prev) => !prev);
 
   useEffect(() => {
     if (!id || !name) return;
@@ -51,6 +57,13 @@ export default function SessionPage() {
         </div>
 
         <div className="flex items-center gap-4 text-sm">
+          <BoardControls
+            gridVisible={gridVisible}
+            toggleGrid={toggleGrid}
+            snapToGrid={snapToGrid}
+            toggleSnapToGrid={toggleSnapToGrid}
+            measurement={measurement}
+          />
           <span className="text-gray-300">Players: {playerCount}</span>
           <span className="text-gray-300">DM: {dmName || "None"}</span>
 
@@ -64,7 +77,12 @@ export default function SessionPage() {
       </div>
 
       <div className="flex-1">
-        <Board />
+        <Board
+          gridVisible={gridVisible}
+          snapToGrid={snapToGrid}
+          measurement={measurement}
+          setMeasurement={setMeasurement}
+        />
       </div>
     </div>
   );
