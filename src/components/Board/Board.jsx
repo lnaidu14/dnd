@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styles from './Board.module.css';
-import { BoardControls } from '../';
+import { DiceRoller } from "../";
 
 const CELL_SIZE = 60;
 
@@ -226,6 +226,8 @@ export default function Board({
           {renderMeasurement()}
         </svg>
       </div>
+
+      <DiceRoller className={styles.diceOverlay} />
     </div>
   );
 }

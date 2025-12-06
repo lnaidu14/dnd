@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './BoardControls.module.css';
-import { FiSettings, FiGrid, FiMove, FiX, FiChevronRight } from 'react-icons/fi';
+import { FiSettings, FiGrid, FiMove, FiX } from "react-icons/fi";
 
 export default function BoardControls({ 
   gridVisible, 
