@@ -26,17 +26,14 @@ export default function Dice3D({ sides = 6, rolling = false }) {
     );
     camera.position.z = 3;
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     mount.appendChild(renderer.domElement);
 
-    // Geometry
     const typeKey = `d${sides}`;
     const geometryFactory = diceMap[typeKey] || diceMap.d20;
     const geometry = geometryFactory(1);
 
-    // Material
     const material = new THREE.MeshStandardMaterial({
       color: "#ffffff",
       roughness: 0.4,
@@ -44,18 +41,15 @@ export default function Dice3D({ sides = 6, rolling = false }) {
       flatShading: true,
     });
 
-    // Mesh
     const die = new THREE.Mesh(geometry, material);
     dieRef.current = die;
     scene.add(die);
 
-    // Lights
     const light = new THREE.DirectionalLight(0xffffff, 1.2);
     light.position.set(3, 3, 5);
     scene.add(light);
     scene.add(new THREE.AmbientLight(0x444444));
 
-    // Animation loop
     const animate = () => {
       if (dieRef.current && rolling) {
         dieRef.current.rotation.x += 0.25;
@@ -66,7 +60,6 @@ export default function Dice3D({ sides = 6, rolling = false }) {
     };
     animate();
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(frameRef.current);
       renderer.dispose();
@@ -76,7 +69,6 @@ export default function Dice3D({ sides = 6, rolling = false }) {
     };
   }, [sides, rolling]);
 
-  // Stop rotation if rolling stops
   useEffect(() => {
     const die = dieRef.current;
     if (!die) return;

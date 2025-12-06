@@ -9,6 +9,7 @@ export default function Board({
   snapToGrid,
   measurement,
   setMeasurement,
+  sides,
 }) {
   const [isMeasuring, setIsMeasuring] = useState(false);
   const [startPos, setStartPos] = useState(null);
@@ -209,7 +210,6 @@ export default function Board({
 
   return (
     <div className={styles.boardContainer}>
-      {/* Board */}
       <div
         ref={boardRef}
         className={styles.board}
@@ -227,7 +227,7 @@ export default function Board({
         </svg>
       </div>
 
-      <DiceRoller className={styles.diceOverlay} />
+      <DiceRoller sides={sides} className={styles.diceOverlay} />
     </div>
   );
 }

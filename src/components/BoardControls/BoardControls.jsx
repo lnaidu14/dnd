@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
 import styles from './BoardControls.module.css';
 import { FiSettings, FiGrid, FiMove, FiX } from "react-icons/fi";
+import { Dropdown } from "primereact/dropdown";
 
-export default function BoardControls({ 
-  gridVisible, 
-  toggleGrid, 
-  snapToGrid, 
+export default function BoardControls({
+  gridVisible,
+  toggleGrid,
+  snapToGrid,
   toggleSnapToGrid,
-  measurement 
+  sides,
+  setSides,
+  measurement,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const sideOptions = [
+    { name: "4", code: "d4" },
+    { name: "6", code: "d6" },
+    { name: "8", code: "d8" },
+    { name: "10", code: "d10" },
+    { name: "20", code: "d20" },
+  ];
 
   return (
     <div className={`${styles.controlsContainer} ${isOpen ? styles.open : ""}`}>
@@ -48,6 +59,15 @@ export default function BoardControls({
                 <FiMove /> Snap to Grid
               </span>
             </label>
+
+            <Dropdown
+              value={sides}
+              onChange={(e) => setSides(e.value)}
+              options={sideOptions}
+              optionLabel="name"
+              placeholder="Select sides"
+              className="w-full md:w-14rem"
+            />
           </div>
 
           {measurement && (
