@@ -26,25 +26,6 @@ export default function DiceRoller({ sides }) {
     }, 1200);
   };
 
-  const getDieClass = () => {
-    switch (sides) {
-      case 4:
-        return styles.d4;
-      case 6:
-        return styles.d6;
-      case 8:
-        return styles.d8;
-      case 10:
-        return styles.d10;
-      case 12:
-        return styles.d12;
-      case 20:
-        return styles.d20;
-      default:
-        return styles.d20;
-    }
-  };
-
   return (
     <>
       <div className={styles.diceOverlay}>
@@ -60,9 +41,9 @@ export default function DiceRoller({ sides }) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
         >
-          <Dice3D sides={sides} rolling={rolling} />
-
-          {!rolling && result !== null && (
+          {rolling || result === null ? (
+            <Dice3D sides={sides} rolling={rolling} />
+          ) : (
             <motion.div
               className={styles.diceResult}
               initial={{ opacity: 0, y: 10 }}

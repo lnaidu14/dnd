@@ -16,6 +16,7 @@ export default function Board({
   const [endPos, setEndPos] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const boardRef = useRef(null);
+
   const updateDimensions = useCallback(() => {
     if (boardRef.current) {
       const { width, height } = boardRef.current.getBoundingClientRect();
@@ -35,50 +36,9 @@ export default function Board({
     return () => resizeObserver.disconnect();
   }, [updateDimensions]);
 
-  const toggleGrid = () => setGridVisible((prev) => !prev);
-
-  const toggleSnapToGrid = () => setSnapToGrid((prev) => !prev);
-
-  const generateGridLines = useCallback(() => {
-    if (!gridVisible) return null;
-
-    const lines = [];
-    const cols = Math.ceil(dimensions.width / CELL_SIZE);
-    const rows = Math.ceil(dimensions.height / CELL_SIZE);
-
-    for (let i = 0; i <= cols; i++) {
-      lines.push(
-        <line
-          key={`col-${i}`}
-          x1={i * CELL_SIZE}
-          y1={0}
-          x2={i * CELL_SIZE}
-          y2={dimensions.height}
-          className={styles.gridLine}
-        />
-      );
-    }
-
-    for (let i = 0; i <= rows; i++) {
-      lines.push(
-        <line
-          key={`row-${i}`}
-          x1={0}
-          y1={i * CELL_SIZE}
-          x2={dimensions.width}
-          y2={i * CELL_SIZE}
-          className={styles.gridLine}
-        />
-      );
-    }
-
-    return lines;
-  }, [dimensions, gridVisible]);
-
   const handleMouseMove = useCallback(
     (e) => {
       if (!isMeasuring || !startPos) return;
-
       const rect = boardRef.current.getBoundingClientRect();
       let x = e.clientX - rect.left;
       let y = e.clientY - rect.top;
@@ -227,7 +187,7 @@ export default function Board({
         </svg>
       </div>
 
-      <DiceRoller sides={sides} className={styles.diceOverlay} />
+      <DiceRoller sides={sides} className={styles.diceOverlay}/>
     </div>
   );
 }
