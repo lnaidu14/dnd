@@ -1,117 +1,84 @@
-.diceOverlay {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+.container {
+  position: sticky;
+  top: 1rem;
+  z-index: 20;
+  background: var(--surface);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.diceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .diceButton {
-  border: none;
-  background: transparent;
+  background: var(--background);
+  border: 2px solid var(--dice-color, var(--primary));
+  border-radius: 0.5rem;
+  padding: 0.75rem;
   cursor: pointer;
-  padding: 0;
-}
-
-.diceCenter {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-}
-
-.diceResult {
+  transition: all 0.3s ease;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.diceResult div {
-  font-size: 2rem;
+.diceButton:hover {
+  background: var(--dice-color, var(--primary));
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.diceButton.rolling {
+  animation: shake 0.18s infinite;
+}
+
+.diceButton.rolling .diceResult {
+  filter: blur(0.6px);
+  opacity: 0.85;
+  transition: filter 0.1s ease, opacity 0.1s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px) rotate(-0.5deg); }
+  75% { transform: translateX(1px) rotate(0.5deg); }
+}
+
+.diceName {
   font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
 }
 
 .diceResult {
-  margin-top: 20px;
-}
-
-.rolling {
-  animation: roll 1.2s ease-out infinite;
-}
-
-@keyframes roll {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(45deg);
-  }
-  50% {
-    transform: rotate(90deg);
-  }
-  75% {
-    transform: rotate(135deg);
-  }
-  100% {
-    transform: rotate(180deg);
-  }
-}
-
-/* 3D Polyhedra Dice Shapes */
-.d4, .d6, .d8, .d10, .d12, .d20 {
-  width: 80px;
-  height: 80px;
-  background-color: #aaa;
-  margin: 0 auto;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 1s;
-}
-
-.d4 {
-  transform: rotateX(35deg) rotateY(45deg);
-  background: linear-gradient(45deg, #ff5722, #f44336);
-}
-
-.d6 {
-  transform: rotateX(45deg) rotateY(45deg);
-  background: linear-gradient(45deg, #2196f3, #03a9f4);
-}
-
-.d8 {
-  transform: rotateX(45deg) rotateY(45deg);
-  background: linear-gradient(45deg, #8bc34a, #4caf50);
-}
-
-.d10 {
-  transform: rotateX(45deg) rotateY(45deg);
-  background: linear-gradient(45deg, #9c27b0, #673ab7);
-}
-
-.d12 {
-  transform: rotateX(35deg) rotateY(45deg);
-  background: linear-gradient(45deg, #ff9800, #ffc107);
-}
-
-.d20 {
-  transform: rotateX(35deg) rotateY(45deg);
-  background: linear-gradient(45deg, #3f51b5, #2196f3);
-}
-
-.d4:before, .d6:before, .d8:before, .d10:before, .d12:before, .d20:before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 2rem;
-  color: white;
+  font-size: 1.5rem;
   font-weight: bold;
+  margin: 0.25rem 0;
+  min-height: 1.5rem;
 }
 
-.d4:before { content: "d4"; }
-.d6:before { content: "d6"; }
-.d8:before { content: "d8"; }
-.d10:before { content: "d10"; }
-.d12:before { content: "d12"; }
-.d20:before { content: "d20"; }
+.diceSides {
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.rollButton {
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.2s ease;
+}
+
+.rollButton:hover {
+  background: var(--primary-hover, #3730a3);
+}

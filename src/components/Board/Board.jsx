@@ -4,13 +4,7 @@ import { DiceRoller } from "../";
 
 const CELL_SIZE = 60;
 
-export default function Board({
-  gridVisible,
-  snapToGrid,
-  measurement,
-  setMeasurement,
-  sides,
-}) {
+export default function Board({ gridVisible, snapToGrid, measurement, setMeasurement }) {
   const [isMeasuring, setIsMeasuring] = useState(false);
   const [startPos, setStartPos] = useState(null);
   const [endPos, setEndPos] = useState(null);
@@ -187,7 +181,7 @@ export default function Board({
         </svg>
       </div>
 
-      <DiceRoller sides={sides} className={styles.diceOverlay}/>
+      <DiceRoller onRoll={(result) => console.log("Dice rolled:", result)} />
     </div>
   );
 }

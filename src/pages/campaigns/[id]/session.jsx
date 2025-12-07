@@ -15,15 +15,12 @@ export default function SessionPage() {
   const [gridVisible, setGridVisible] = useState(true);
   const [snapToGrid, setSnapToGrid] = useState(true);
   const [measurement, setMeasurement] = useState(null);
-  const [sides, setSides] = useState(20);
 
   const toggleGrid = () => setGridVisible((prev) => !prev);
   const toggleSnapToGrid = () => setSnapToGrid((prev) => !prev);
 
   useEffect(() => {
     if (!id || !name) return;
-
-    console.log("sides: ", sides);
 
     const socket = io("http://localhost:4000");
 
@@ -44,7 +41,7 @@ export default function SessionPage() {
     });
 
     return () => socket.disconnect();
-  }, [id, name, sides]);
+  }, [id, name]);
 
   return (
     <div className="w-screen h-screen bg-gray-900 text-gray-100 flex flex-col">
@@ -64,8 +61,6 @@ export default function SessionPage() {
             toggleGrid={toggleGrid}
             snapToGrid={snapToGrid}
             toggleSnapToGrid={toggleSnapToGrid}
-            sides={sides}
-            setSides={setSides}
             measurement={measurement}
           />
           <span className="text-gray-300">Players: {playerCount}</span>
@@ -86,7 +81,6 @@ export default function SessionPage() {
           snapToGrid={snapToGrid}
           measurement={measurement}
           setMeasurement={setMeasurement}
-          sides={sides.name}
         />
       </div>
     </div>
