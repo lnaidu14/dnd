@@ -41,12 +41,12 @@ export async function initDatabase() {
 
       initiative_modifier INTEGER DEFAULT 0,
 
-      ability_scores JSON,       -- {str: 10, dex: 14, ...}
-      saving_throws JSON,        -- {str: true, dex: false, ...}
-      skills JSON,               -- {athletics: true, stealth: false, ...}
+      ability_scores JSON,
+      saving_throws JSON,
+      skills JSON,
 
       death_saves JSON DEFAULT '{"success":0,"fail":0}',
-      conditions JSON DEFAULT '[]',   -- ["poisoned","prone"]
+      conditions JSON DEFAULT '[]',
 
       inventory JSON DEFAULT '[]',
       spells_known JSON DEFAULT '[]',
@@ -55,12 +55,12 @@ export async function initDatabase() {
 
       claimed_by TEXT DEFAULT NULL,
 
-      notes TEXT,                -- player notes
-      dm_notes TEXT,             -- hidden from players
+      notes TEXT,
+      dm_notes TEXT,
 
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY(campaign_id) REFERENCES campaigns(id),
+      FOREIGN KEY(campaign_id) REFERENCES campaigns(id)
     );
 
     CREATE TABLE IF NOT EXISTS sessions (
