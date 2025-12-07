@@ -16,29 +16,16 @@ export async function initDatabase() {
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-    CREATE TABLE IF NOT EXISTS users (
-      id TEXT PRIMARY KEY,
-      username TEXT UNIQUE NOT NULL,
-      is_dm BOOLEAN DEFAULT 0
-    );
-
-    CREATE TABLE IF NOT EXISTS campaign_users (
-      id TEXT PRIMARY KEY,
-      campaign_id TEXT NOT NULL,
-      user_id TEXT NOT NULL,
-      role TEXT CHECK(role IN ('dm', 'player')) NOT NULL,
-      FOREIGN KEY(campaign_id) REFERENCES campaigns(id),
-      FOREIGN KEY(user_id) REFERENCES users(id)
-    );
-
     CREATE TABLE IF NOT EXISTS characters (
       id TEXT PRIMARY KEY,
+      is_npc BOOLEAN DEFAULT 0,
       campaign_id TEXT NOT NULL,
-      user_id TEXT,              -- nullable if NPC
       name TEXT NOT NULL,
+      portrait TEXT,
+      token_image TEXT,
       
       race TEXT,
-      class TEXT NOT NULL,
+      character_class TEXT NOT NULL,
       subclass TEXT,
       background TEXT,
       alignment TEXT,
@@ -73,9 +60,7 @@ export async function initDatabase() {
 
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
       FOREIGN KEY(campaign_id) REFERENCES campaigns(id),
-      FOREIGN KEY(user_id) REFERENCES users(id)
     );
 
     CREATE TABLE IF NOT EXISTS sessions (
