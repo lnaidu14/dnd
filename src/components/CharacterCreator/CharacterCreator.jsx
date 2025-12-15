@@ -1,34 +1,50 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Card } from "primereact/card";
 import { Avatar } from "primereact/avatar";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown } from "primereact/dropdown";
+import { InputTextarea } from "primereact/inputtextarea";
+import { Button } from "primereact/button";
+import { Image } from "primereact/image";
 
 export default function CharacterCreator({ universe }) {
+  const [imageSrc, setImageSrc] = useState(null);
+
   const [name, setName] = useState("");
   const [race, setRace] = useState("");
-  const races = {
-    league: [
-      { name: "Human", code: "human" },
-      { name: "Vastaya", code: "vastaya" },
-      { name: "Yordle", code: "yordles" },
-      { name: "Troll", code: "troll" },
-      { name: "Minotaur", code: "minotaur" },
-      { name: "Marai", code: "marai" },
-    ],
-    classic: [
-      { name: "Human", code: "human" },
-      { name: "Dragonborn", code: "dragonborn" },
-      { name: "Dwarf", code: "dwarf" },
-      { name: "Elf", code: "elf" },
-      { name: "Gnome", code: "gnome" },
-      { name: "Half-Elf", code: "halfelf" },
-      { name: "Half-Orc", code: "halforc" },
-      { name: "Tiefling", code: "tiefling" },
-    ],
-  };
+  // const races = {
+  //   league: [
+  //     { name: "Human", code: "human" },
+  //     { name: "Vastaya", code: "vastaya" },
+  //     { name: "Yordle", code: "yordles" },
+  //     { name: "Troll", code: "troll" },
+  //     { name: "Minotaur", code: "minotaur" },
+  //     { name: "Marai", code: "marai" },
+  //   ],
+  //   classic: [
+  //     { name: "Human", code: "human" },
+  //     { name: "Dragonborn", code: "dragonborn" },
+  //     { name: "Dwarf", code: "dwarf" },
+  //     { name: "Elf", code: "elf" },
+  //     { name: "Gnome", code: "gnome" },
+  //     { name: "Half-Elf", code: "halfelf" },
+  //     { name: "Half-Orc", code: "halforc" },
+  //     { name: "Tiefling", code: "tiefling" },
+  //   ],
+  // };
 
+  const races = [
+    { name: "Human", code: "human" },
+    { name: "Dragonborn", code: "dragonborn" },
+    { name: "Dwarf", code: "dwarf" },
+    { name: "Elf", code: "elf" },
+    { name: "Gnome", code: "gnome" },
+    { name: "Half-Elf", code: "halfelf" },
+    { name: "Half-Orc", code: "halforc" },
+    { name: "Tiefling", code: "tiefling" },
+  ];
   const [characterClass, setCharacterClass] = useState("");
   const characterClasses = [
     { name: "Barbarian", code: "barbarian" },
@@ -42,7 +58,7 @@ export default function CharacterCreator({ universe }) {
     { name: "Rogue", code: "rogue" },
   ];
 
-  const [background, setBackground] = useState("default");
+  const [background, setBackground] = useState("");
   const backgrounds = [
     {
       name: "Acolyte",
@@ -59,55 +75,85 @@ export default function CharacterCreator({ universe }) {
     { name: "Soldier", code: "soldier" },
     { name: "Urchin", code: "urchin" },
   ];
-  const backgroundDescriptions = {
-    acolyte:
-      "You have spent your life in service to a temple, learning sacred rites and providing sacrifices to the god or gods you worship. Serving the gods and discovering their sacred works will guide you to greatness.",
+
+  const [portraitPrompt, setPortraitPrompt] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const response = await axios.get("/api/assets/generate", {
+      params: { background },
+      responseType: "blob", // 👈 IMPORTANT (browser-friendly)
+    });
+
+    const imageUrl = URL.createObjectURL(response.data);
+    setImageSrc(imageUrl);
   };
 
   return (
     <div className="card flex justify-content-center">
       <Card title="Character Creator">
-        <Avatar label="P" size="xlarge" shape="circle" />
-        <FloatLabel>
-          <InputText
-            id="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <label htmlFor="Name">Name</label>
-        </FloatLabel>
-        <Dropdown
-          value={race}
-          onChange={(e) => setRace(e.value)}
-          options={races["league"]}
-          optionLabel="name"
-          placeholder="Select a Race"
-          className="w-full md:w-14rem"
-        />
+        <div className="flex gap-6">
+          <div className="flex flex-col gap-8 flex-1">
+            <FloatLabel>
+              <InputText
+                id="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <label htmlFor="Name">Name</label>
+            </FloatLabel>
+            <FloatLabel>
+              <Dropdown
+                value={race}
+                onChange={(e) => setRace(e.value.name)}
+                options={races}
+                optionLabel="name"
+                placeholder="Select a Race"
+                className="w-full md:w-14rem"
+              />
+              <label htmlFor="Race">Race</label>
+            </FloatLabel>
+            {race}
+            <FloatLabel>
+              <Dropdown
+                value={characterClass}
+                onChange={(e) => setCharacterClass(e.value.name)}
+                options={characterClasses}
+                optionLabel="name"
+                placeholder="Select a Character Class"
+                className="w-full md:w-14rem"
+              />
+              <label htmlFor="Character Class">Character Class</label>
+            </FloatLabel>
+            {characterClass}
+            <form onSubmit={handleSubmit}>
+              <FloatLabel>
+                <InputTextarea
+                  id="background"
+                  autoResize
+                  value={background}
+                  onChange={(e) => setBackground(e.target.value)}
+                  rows={5}
+                  cols={30}
+                />
+                <label htmlFor="background">Background</label>
+              </FloatLabel>
 
-        <Dropdown
-          value={characterClass}
-          onChange={(e) => setCharacterClass(e.value)}
-          options={characterClasses}
-          optionLabel="name"
-          placeholder="Select a Character Class"
-          className="w-full md:w-14rem"
-        />
-
-        <Dropdown
-          value={background}
-          onChange={(e) => setBackground(e.value)}
-          options={backgrounds}
-          optionLabel="name"
-          placeholder="Select a Background"
-          className="w-full md:w-14rem"
-        />
-        {background && (
-          <div className="m-3 p-3 border-1 border-400 border-round">
-            <h3 className="m-0 mb-2">{background}</h3>
+              <Button type="submit">Submit</Button>
+            </form>
           </div>
-        )}
-        <p className="m-0">This is the Character Creator component.</p>
+          <div className="flex align-items-start justify-content-center w-12rem">
+            <Image
+              src={
+                imageSrc ||
+                "https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg"
+              }
+              alt="Generated Character"
+              width="250"
+            />
+          </div>
+        </div>
       </Card>
     </div>
   );
