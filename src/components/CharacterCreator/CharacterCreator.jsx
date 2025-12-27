@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
@@ -7,9 +6,8 @@ import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
-import { Image } from "primereact/image";
 import { InputSwitch } from "primereact/inputswitch";
-import { characterData } from "@/data/constants";
+import { characterData, POINT_BUY_COSTS } from "@/data/constants";
 import {
   calculateMaxHP,
   calculatePointBuyTotal,
@@ -18,6 +16,7 @@ import {
   proficiencyBonus,
   calculateSavingThrows,
 } from "@/data/dndHelpers";
+import { Portrait } from "@/components";
 
 export default function CharacterCreator({ universe }) {
   const [name, setName] = useState("");
@@ -26,6 +25,7 @@ export default function CharacterCreator({ universe }) {
   const [selectedCharacterClass, setSelectedCharacterClass] = useState(null);
   const [selectedBackground, setSelectedBackground] = useState(null);
   const [selectedAlignment, setSelectedAlignment] = useState(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState("");
   const [isNpc, setIsNpc] = useState(false);
   const [level, setLevel] = useState(1);
   const [stats, setStats] = useState({
@@ -43,12 +43,15 @@ export default function CharacterCreator({ universe }) {
   const updateStat = (ability, newValue) => {
     if (newValue < 8 || newValue > 15) return;
 
-    const newStats = { ...stats, [ability]: newValue };
-    const newTotal = calculatePointBuyTotal(newStats);
+    const oldValue = stats[ability];
+    const oldCost = POINT_BUY_COSTS[oldValue];
+    const newCost = POINT_BUY_COSTS[newValue];
 
-    if (newTotal <= 27) {
-      setStats(newStats);
-    }
+    const costDifference = newCost - oldCost;
+
+    if (costDifference > pointsRemaining) return;
+
+    setStats({ ...stats, [ability]: newValue });
   };
 
   const handleSubmit = (e) => {
@@ -99,6 +102,8 @@ export default function CharacterCreator({ universe }) {
         selectedCharacterClass.savingThrowProficiencies
       ),
     };
+
+    console.log("Created Character:", character);
   };
 
   return (
@@ -107,21 +112,23 @@ export default function CharacterCreator({ universe }) {
         <div className="flex gap-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <FloatLabel>
+              <label htmlFor="level">Level</label>
               <InputText
                 id="name"
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
+                placeholder="Enter character level..."
               />
-              <label htmlFor="level">Level</label>
             </FloatLabel>
 
             <FloatLabel>
+              <label htmlFor="name">Name</label>
               <InputText
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                placeholder="Enter character name..."
               />
-              <label htmlFor="name">Name</label>
             </FloatLabel>
 
             <FloatLabel>
@@ -196,7 +203,7 @@ export default function CharacterCreator({ universe }) {
                       }}
                       showButtons
                       buttonLayout="horizontal"
-                      step={1}
+                      step={pointsRemaining ? 1 : 0}
                       min={8}
                       max={15}
                       decrementButtonClassName="p-button-danger"
@@ -234,18 +241,34 @@ export default function CharacterCreator({ universe }) {
                 value={backstory}
                 onChange={(e) => setBackStory(e.target.value)}
                 rows={4}
+                placeholder="Enter character backstory..."
+                className="w-full"
               />
-              <label>Backstory</label>
+              <label>Character Backstory</label>
             </FloatLabel>
 
             <Button type="submit">Create Character</Button>
           </form>
-
-          <Image
-            src="https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg"
-            alt="Character"
-            width="250"
-          />
+          <div>
+            <FloatLabel>
+              <InputText
+                id="name"
+                label="Image URL"
+                value={selectedImageUrl}
+                onChange={(e) => setSelectedImageUrl(e.target.value)}
+                placeholder="Enter an image URL..."
+              />
+              <label>Image URL</label>
+              <i
+                title="You can find image URLs by right clicking on an image you find on the internet and selecting 'Copy Image Link' (wording may vary based on browser). You can verify if it works by pasting the same link on your browser's search bar."
+                className="pi pi-info-circle m-6 text-gray-500 hover:text-blue-500 hover:scale-110 transition duration-200 ease-in-out"
+              ></i>
+            </FloatLabel>
+            <Portrait
+              imageUrl={selectedImageUrl}
+              name={name ? name : "Character Name"}
+            />
+          </div>
         </div>
       </Card>
     </div>

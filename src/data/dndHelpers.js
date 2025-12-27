@@ -1,14 +1,14 @@
 import { POINT_BUY_COSTS } from './constants';
 
 export const abilityModifier = (score) =>
-    Math.floor((score - 10) / 2);
+  Math.floor((score - 10) / 2);
 
 export const proficiencyBonus = (level) => {
-    if (level >= 17) return 6;
-    if (level >= 13) return 5;
-    if (level >= 9) return 4;
-    if (level >= 5) return 3;
-    return 2;
+  if (level >= 17) return 6;
+  if (level >= 13) return 5;
+  if (level >= 9) return 4;
+  if (level >= 5) return 3;
+  return 2;
 };
 
 export const calculatePointBuyTotal = (stats) =>
@@ -60,7 +60,6 @@ export const calculateSavingThrows = (
 
   return Object.fromEntries(
     Object.entries(abilityModifiers).map(([ability, mod]) => {
-      console.log("ability: ", ability);
       const isProficient = savingThrowProficiencies.includes(ability);
       return [ability, mod + (isProficient ? profBonus : 0)];
     })
