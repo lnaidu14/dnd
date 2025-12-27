@@ -44,6 +44,8 @@ export async function initDatabase() {
       ability_scores JSON,
       saving_throws JSON,
       skills JSON,
+      spell_save_dc INTEGER,
+      spell_attack_bonus INTEGER,
 
       death_saves JSON DEFAULT '{"success":0,"fail":0}',
       conditions JSON DEFAULT '[]',
@@ -52,11 +54,6 @@ export async function initDatabase() {
       spells_known JSON DEFAULT '[]',
       spells_prepared JSON DEFAULT '[]',
       spell_slots JSON DEFAULT '{}',
-
-      claimed_by TEXT DEFAULT NULL,
-
-      notes TEXT,
-      dm_notes TEXT,
 
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
