@@ -1,158 +1,167 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Card } from "primereact/card";
-import { Avatar } from "primereact/avatar";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
+import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Image } from "primereact/image";
+import { characterData } from "@/data/constants";
+import {
+  calculatePointBuyTotal,
+  abilityModifier,
+  applyRacialBonuses,
+  proficiencyBonus,
+} from "@/data/dndHelpers";
 
 export default function CharacterCreator({ universe }) {
-  const [imageSrc, setImageSrc] = useState(null);
-
   const [name, setName] = useState("");
-  const [race, setRace] = useState("");
-  // const races = {
-  //   league: [
-  //     { name: "Human", code: "human" },
-  //     { name: "Vastaya", code: "vastaya" },
-  //     { name: "Yordle", code: "yordles" },
-  //     { name: "Troll", code: "troll" },
-  //     { name: "Minotaur", code: "minotaur" },
-  //     { name: "Marai", code: "marai" },
-  //   ],
-  //   classic: [
-  //     { name: "Human", code: "human" },
-  //     { name: "Dragonborn", code: "dragonborn" },
-  //     { name: "Dwarf", code: "dwarf" },
-  //     { name: "Elf", code: "elf" },
-  //     { name: "Gnome", code: "gnome" },
-  //     { name: "Half-Elf", code: "halfelf" },
-  //     { name: "Half-Orc", code: "halforc" },
-  //     { name: "Tiefling", code: "tiefling" },
-  //   ],
-  // };
+  const [backstory, setBackStory] = useState("");
+  const [selectedRace, setSelectedRace] = useState(null);
+  const [selectedCharacterClass, setSelectedCharacterClass] = useState(null);
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [selectedAlignment, setSelectedAlignment] = useState(null);
+  const [level] = useState(1);
+  const [stats, setStats] = useState({
+    STR: 8,
+    DEX: 8,
+    CON: 8,
+    INT: 8,
+    WIS: 8,
+    CHA: 8,
+  });
 
-  const races = [
-    { name: "Human", code: "human" },
-    { name: "Dragonborn", code: "dragonborn" },
-    { name: "Dwarf", code: "dwarf" },
-    { name: "Elf", code: "elf" },
-    { name: "Gnome", code: "gnome" },
-    { name: "Half-Elf", code: "halfelf" },
-    { name: "Half-Orc", code: "halforc" },
-    { name: "Tiefling", code: "tiefling" },
-  ];
-  const [characterClass, setCharacterClass] = useState("");
-  const characterClasses = [
-    { name: "Barbarian", code: "barbarian" },
-    { name: "Bard", code: "bard" },
-    { name: "Cleric", code: "cleric" },
-    { name: "Druid", code: "druid" },
-    { name: "Fighter", code: "fighter" },
-    { name: "Monk", code: "monk" },
-    { name: "Paladin", code: "paladin" },
-    { name: "Ranger", code: "ranger" },
-    { name: "Rogue", code: "rogue" },
-  ];
+  const pointsSpent = calculatePointBuyTotal(stats);
+  const pointsRemaining = 27 - pointsSpent;
 
-  const [background, setBackground] = useState("");
-  const backgrounds = [
-    {
-      name: "Acolyte",
-      code: "acolyte",
-    },
-    { name: "Charlatan", code: "charlatan" },
-    { name: "Criminal", code: "criminal" },
-    { name: "Entertainer", code: "entertainer" },
-    { name: "Folk Hero", code: "folkhero" },
-    { name: "Guild Artisan", code: "guildartisan" },
-    { name: "Noble", code: "noble" },
-    { name: "Outlander", code: "outlander" },
-    { name: "Sage", code: "sage" },
-    { name: "Soldier", code: "soldier" },
-    { name: "Urchin", code: "urchin" },
-  ];
+  const updateStat = (ability, newValue) => {
+    if (newValue < 8 || newValue > 15) return;
 
-  const [portraitPrompt, setPortraitPrompt] = useState(null);
+    const newStats = { ...stats, [ability]: newValue };
+    const newTotal = calculatePointBuyTotal(newStats);
 
-  const handleSubmit = async (e) => {
+    if (newTotal <= 27) {
+      setStats(newStats);
+    }
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    const response = await axios.get("/api/assets/generate", {
-      params: { background },
-      responseType: "blob", // 👈 IMPORTANT (browser-friendly)
-    });
+    const finalStats = selectedRace
+      ? applyRacialBonuses(stats, selectedRace)
+      : stats;
 
-    const imageUrl = URL.createObjectURL(response.data);
-    setImageSrc(imageUrl);
+    const character = {
+      name,
+      level,
+      race: selectedRace?.name,
+      class: selectedCharacterClass?.name,
+      background: selectedBackground?.name,
+      alignment: selectedAlignment?.name,
+      stats: finalStats,
+      modifiers: Object.fromEntries(
+        Object.entries(finalStats).map(([k, v]) => [k, abilityModifier(v)])
+      ),
+      proficiencyBonus: proficiencyBonus(level),
+      backstory,
+    };
+
+    console.log("FINAL CHARACTER:", character);
   };
 
   return (
     <div className="card flex justify-content-center">
       <Card title="Character Creator">
         <div className="flex gap-6">
-          <div className="flex flex-col gap-8 flex-1">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <FloatLabel>
               <InputText
-                id="Name"
+                id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
-              <label htmlFor="Name">Name</label>
+              <label htmlFor="name">Name</label>
             </FloatLabel>
-            <FloatLabel>
-              <Dropdown
-                value={race}
-                onChange={(e) => setRace(e.value.name)}
-                options={races}
-                optionLabel="name"
-                placeholder="Select a Race"
-                className="w-full md:w-14rem"
-              />
-              <label htmlFor="Race">Race</label>
-            </FloatLabel>
-            {race}
-            <FloatLabel>
-              <Dropdown
-                value={characterClass}
-                onChange={(e) => setCharacterClass(e.value.name)}
-                options={characterClasses}
-                optionLabel="name"
-                placeholder="Select a Character Class"
-                className="w-full md:w-14rem"
-              />
-              <label htmlFor="Character Class">Character Class</label>
-            </FloatLabel>
-            {characterClass}
-            <form onSubmit={handleSubmit}>
-              <FloatLabel>
-                <InputTextarea
-                  id="background"
-                  autoResize
-                  value={background}
-                  onChange={(e) => setBackground(e.target.value)}
-                  rows={5}
-                  cols={30}
-                />
-                <label htmlFor="background">Background</label>
-              </FloatLabel>
 
-              <Button type="submit">Submit</Button>
-            </form>
-          </div>
-          <div className="flex align-items-start justify-content-center w-12rem">
-            <Image
-              src={
-                imageSrc ||
-                "https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg"
-              }
-              alt="Generated Character"
-              width="250"
+            <Dropdown
+              value={selectedRace}
+              onChange={(e) => setSelectedRace(e.value)}
+              options={characterData.races}
+              optionLabel="name"
+              placeholder="Select Race"
             />
-          </div>
+
+            <Dropdown
+              value={selectedCharacterClass}
+              onChange={(e) => setSelectedCharacterClass(e.value)}
+              options={characterData.characterClasses}
+              optionLabel="name"
+              placeholder="Select Class"
+            />
+
+            <Dropdown
+              value={selectedBackground}
+              onChange={(e) => setSelectedBackground(e.value)}
+              options={characterData.backgrounds}
+              optionLabel="name"
+              placeholder="Select Background"
+            />
+
+            <Dropdown
+              value={selectedAlignment}
+              onChange={(e) => setSelectedAlignment(e.value)}
+              options={characterData.alignments}
+              optionLabel="name"
+              placeholder="Select Alignment"
+            />
+
+            <div>
+              <h4>Ability Scores (Point Buy)</h4>
+              {Object.keys(stats).map((ability) => (
+                <div key={ability} className="flex align-items-center gap-2">
+                  <strong>{ability}</strong>
+                  <InputNumber
+                    value={stats[ability]}
+                    onValueChange={(e) => updateStat(ability, e.value)}
+                    showButtons
+                    buttonLayout="horizontal"
+                    step={1}
+                    min={8}
+                    max={15}
+                    decrementButtonClassName="p-button-danger"
+                    incrementButtonClassName="p-button-success"
+                    incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus"
+                  />
+                  <span>
+                    Mod: {abilityModifier(stats[ability]) >= 0 ? "+" : ""}
+                    {abilityModifier(stats[ability])}
+                  </span>
+                </div>
+              ))}
+              <strong>Points Remaining: {pointsRemaining}</strong>
+            </div>
+
+            <FloatLabel>
+              <InputTextarea
+                value={backstory}
+                onChange={(e) => setBackStory(e.target.value)}
+                rows={4}
+              />
+              <label>Backstory</label>
+            </FloatLabel>
+
+            <Button type="submit">Create Character</Button>
+          </form>
+
+          <Image
+            src="https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg"
+            alt="Character"
+            width="250"
+          />
         </div>
       </Card>
     </div>
