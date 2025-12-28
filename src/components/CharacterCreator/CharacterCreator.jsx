@@ -186,49 +186,67 @@ export default function CharacterCreator({ universe }) {
             <div className="flex flex-col">
               <h4 className="mb-3">Ability Scores (Point Buy)</h4>
 
-              <div className="flex flex-col gap-3">
-                {Object.keys(stats).map((ability) => (
-                  <div
-                    key={ability}
-                    className="grid grid-cols-[auto_1fr_auto] items-center gap-x-3"
-                  >
-                    <strong className="text-sm w-12">{ability}</strong>
+              <div className="flex flex-col flex-1 gap-3">
+                {Object.keys(stats).map((ability) => {
+                  const value = stats[ability];
 
-                    <InputNumber
-                      value={stats[ability]}
-                      onValueChange={(e) => {
-                        if (e.value !== null) {
-                          updateStat(ability, e.value);
-                        }
-                      }}
-                      showButtons
-                      buttonLayout="horizontal"
-                      step={pointsRemaining ? 1 : 0}
-                      min={8}
-                      max={15}
-                      decrementButtonClassName="p-button-danger"
-                      incrementButtonClassName="p-button-success"
-                      incrementButtonIcon="pi pi-plus"
-                      decrementButtonIcon="pi pi-minus"
-                      className="w-full min-w-0"
-                      format={false}
-                    />
+                  const increment = () => {
+                    if (value < 15) {
+                      updateStat(ability, value + 1);
+                    }
+                  };
 
-                    <span className="text-sm whitespace-nowrap w-14 text-right">
-                      Mod:
-                      <span
-                        className={
-                          abilityModifier(stats[ability]) >= 0
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }
+                  const decrement = () => {
+                    if (value > 8) {
+                      updateStat(ability, value - 1);
+                    }
+                  };
+
+                  return (
+                    <div
+                      key={ability}
+                      className="flex flex-row gap-x-6 items-center"
+                    >
+                      <strong className="text-sm w-12">{ability}</strong>
+
+                      <Button
+                        type="button"
+                        onClick={decrement}
+                        disabled={value <= 8}
+                        className="p-button-danger disabled:opacity-40"
                       >
-                        {abilityModifier(stats[ability]) >= 0 ? "+" : ""}
-                        {abilityModifier(stats[ability])}
+                        <div className="pi pi-minus"></div>
+                      </Button>
+
+                      <div className="w-10 h-10 flex items-center rounded-md justify-center text-sm bg-gray-100 text-gray-800">
+                        {value}
+                      </div>
+
+                      <Button
+                        type="button"
+                        onClick={increment}
+                        disabled={value >= 15}
+                        className="p-button-success disabled:opacity-40"
+                      >
+                        <div className="pi pi-plus"></div>
+                      </Button>
+
+                      <span className="text-sm whitespace-nowrap w-14 text-right">
+                        Mod:
+                        <span
+                          className={
+                            abilityModifier(value) >= 0
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }
+                        >
+                          {abilityModifier(value) >= 0 ? "+" : ""}
+                          {abilityModifier(value)}
+                        </span>
                       </span>
-                    </span>
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
               </div>
 
               <strong className="mt-3">
