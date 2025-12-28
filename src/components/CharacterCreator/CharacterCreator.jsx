@@ -101,6 +101,8 @@ export default function CharacterCreator({ universe }) {
         level,
         selectedCharacterClass.savingThrowProficiencies
       ),
+      portrait: selectedImageUrl,
+      token_image: selectedImageUrl,
     };
 
     console.log("Created Character:", character);
@@ -109,8 +111,11 @@ export default function CharacterCreator({ universe }) {
   return (
     <div className="card flex justify-content-center">
       <Card title="Character Creator">
-        <div className="flex gap-6">
+        <div className="flex flex-row gap-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div className="text-xl font-bold uppercase mb-2">
+              Character Information
+            </div>
             <FloatLabel>
               <label htmlFor="level">Level</label>
               <InputText
@@ -118,6 +123,7 @@ export default function CharacterCreator({ universe }) {
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
                 placeholder="Enter character level..."
+                className="w-full"
               />
             </FloatLabel>
 
@@ -128,6 +134,7 @@ export default function CharacterCreator({ universe }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter character name..."
+                className="w-full"
               />
             </FloatLabel>
 
@@ -138,6 +145,7 @@ export default function CharacterCreator({ universe }) {
                 options={characterData.races}
                 optionLabel="name"
                 placeholder="Select Race"
+                className="w-full"
               />
               <label htmlFor="race">Race</label>
             </FloatLabel>
@@ -149,6 +157,7 @@ export default function CharacterCreator({ universe }) {
                 options={characterData.characterClasses}
                 optionLabel="name"
                 placeholder="Select Class"
+                className="w-full"
               />
               <label htmlFor="characterClass">Character Class</label>
             </FloatLabel>
@@ -160,6 +169,7 @@ export default function CharacterCreator({ universe }) {
                 options={characterData.backgrounds}
                 optionLabel="name"
                 placeholder="Select Background"
+                className="w-full"
               />
               <label htmlFor="background">Background</label>
             </FloatLabel>
@@ -171,6 +181,7 @@ export default function CharacterCreator({ universe }) {
                 options={characterData.alignments}
                 optionLabel="name"
                 placeholder="Select Alignment"
+                className="w-full"
               />
               <label htmlFor="alignment">Alignment</label>
             </FloatLabel>
@@ -184,7 +195,9 @@ export default function CharacterCreator({ universe }) {
             </span>
 
             <div className="flex flex-col">
-              <h4 className="mb-3">Ability Scores (Point Buy)</h4>
+              <div className="text-xl font-bold uppercase mb-2">
+                Ability Scores
+              </div>
 
               <div className="flex flex-col flex-1 gap-3">
                 {Object.keys(stats).map((ability) => {
@@ -267,7 +280,7 @@ export default function CharacterCreator({ universe }) {
 
             <Button type="submit">Create Character</Button>
           </form>
-          <div>
+          <div className="flex flex-col gap-6 items-center">
             <FloatLabel>
               <InputText
                 id="name"
@@ -279,7 +292,7 @@ export default function CharacterCreator({ universe }) {
               <label>Image URL</label>
               <i
                 title="You can find image URLs by right clicking on an image you find on the internet and selecting 'Copy Image Link' (wording may vary based on browser). You can verify if it works by pasting the same link on your browser's search bar."
-                className="pi pi-info-circle m-6 text-gray-500 hover:text-blue-500 hover:scale-110 transition duration-200 ease-in-out"
+                className="pi pi-info-circle ml-4 text-gray-500 hover:text-blue-500 hover:scale-110 transition duration-200 ease-in-out"
               ></i>
             </FloatLabel>
             <Portrait
