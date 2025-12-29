@@ -278,7 +278,7 @@ export default function CharacterCreator({ universe }) {
               <label>Character Backstory</label>
             </FloatLabel>
 
-            <Button type="submit">Create Character</Button>
+            <Button type="submit" label="Create Character" />
           </form>
           <div className="flex flex-col gap-6 items-center">
             <FloatLabel>
