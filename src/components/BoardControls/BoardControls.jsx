@@ -1,43 +1,9 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { CharacterCreator } from "@/components";
-import { Checkbox } from "primereact/checkbox";
-
-function SettingsPanel({
-  gridVisible,
-  toggleGrid,
-  snapToGrid,
-  toggleSnapToGrid,
-  measurement,
-}) {
-  return (
-    <>
-      <div className="flex gap-2 items-center">
-        <div className="flex flex-col gap-6 items-center">
-          <i className="pi pi-table" />
-          <i className="pi pi-arrows-alt" />
-        </div>
-        <div className="flex flex-col gap-6 items-center">
-          <div>Grid</div>
-          <div>Snap to Grid</div>
-        </div>
-
-        <div className="flex flex-col gap-6 items-center">
-          <Checkbox onChange={toggleGrid} checked={gridVisible} />
-          <Checkbox onChange={toggleSnapToGrid} checked={snapToGrid} />
-        </div>
-      </div>
-      <div className="flex gap-2 items-center"></div>
-
-      <div
-        className="absolute right-0 top-full mt-2 w-56
-                        bg-gray-800 border border-gray-700 rounded-lg
-                        shadow-lg z-50"
-      ></div>
-    </>
-  );
-}
+import { InputSwitch } from "primereact/inputswitch";
+import { Menu } from "primereact/menu";
 
 export default function BoardControls({
   gridVisible,
@@ -47,7 +13,64 @@ export default function BoardControls({
   measurement,
 }) {
   const [isCharacterCreatorOpen, setIsCharacterCreatorOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const settingsMenuRef = useRef(null);
+  const settingsMenuItems = [
+    {
+      label: "Settings",
+      items: [
+        {
+          label: "Grid",
+          icon: "pi pi-table",
+          template: (item, options) => {
+            return (
+              <div
+                className="flex items-center w-full justify-between px-4 py-2 p-menuitem-content"
+                data-pc-section="content"
+                onMouseMove={(e) => options.onMouseMove(e)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <label htmlFor="grid" onClick={(e) => e.stopPropagation()}>
+                  Grid
+                </label>
+
+                <InputSwitch
+                  checked={gridVisible}
+                  onChange={toggleGrid}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            );
+          },
+        },
+        {
+          label: "Snap to Grid",
+          icon: "pi pi-arrows-alt",
+          template: (item, options) => {
+            return (
+              <div
+                className="flex items-center w-full justify-between px-4 py-2 p-menuitem-content"
+                data-pc-section="content"
+                onMouseMove={(e) => options.onMouseMove(e)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <label
+                  htmlFor="snap_to_grid"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Snap to Grid
+                </label>
+                <InputSwitch
+                  onChange={toggleSnapToGrid}
+                  checked={snapToGrid}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            );
+          },
+        },
+      ],
+    },
+  ];
 
   return (
     <div className="relative inline-flex items-center gap-2">
@@ -60,7 +83,7 @@ export default function BoardControls({
       <Dialog
         header="Character Creator"
         visible={isCharacterCreatorOpen}
-        style={{ width: "50vw" }}
+        style={{ width: "60vw" }}
         onHide={() => {
           if (!isCharacterCreatorOpen) return;
           setIsCharacterCreatorOpen(false);
@@ -69,29 +92,20 @@ export default function BoardControls({
         <CharacterCreator />
       </Dialog>
 
+      <Menu
+        model={settingsMenuItems}
+        popup
+        ref={settingsMenuRef}
+        id="popup_menu_left"
+      />
       <Button
         icon="pi pi-cog"
-        onClick={() => setIsSettingsOpen(true)}
+        onClick={(event) => settingsMenuRef.current.toggle(event)}
+        aria-controls="popup_menu_left"
+        aria-haspopup
         rounded
         severity="secondary"
       />
-      <Dialog
-        header="Board Settings"
-        visible={isSettingsOpen}
-        style={{ width: "50vw" }}
-        onHide={() => {
-          if (!isSettingsOpen) return;
-          setIsSettingsOpen(false);
-        }}
-      >
-        <SettingsPanel
-          gridVisible={gridVisible}
-          toggleGrid={toggleGrid}
-          snapToGrid={snapToGrid}
-          toggleSnapToGrid={toggleSnapToGrid}
-          measurement={measurement}
-        />
-      </Dialog>
     </div>
   );
 }
