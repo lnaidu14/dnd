@@ -1,4 +1,4 @@
-import { ErrorBoundary, HomeScreen, CampaignsList } from "../components";
+import { ErrorBoundary, CampaignsList } from "../components";
 import { useState, useEffect, createContext } from "react";
 import axios from "axios";
 

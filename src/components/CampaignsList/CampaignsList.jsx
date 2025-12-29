@@ -6,6 +6,7 @@ import { Button } from "primereact/button";
 import axios from "axios";
 import { Toast } from "primereact/toast";
 import { useRouter } from "next/router";
+import { v4 as uuidv4 } from "uuid";
 
 export default function CampaignsList({ loading, error }) {
   const { campaigns, setCampaigns } = useContext(CampaignsContext);
@@ -46,9 +47,12 @@ export default function CampaignsList({ loading, error }) {
     const name = prompt("Enter your name:");
     if (!name) return;
 
+    const clientId = localStorage.getItem("client_id") || uuidv4();
+    localStorage.setItem("client_id", clientId);
+
     router.push({
       pathname: `/campaigns/${campaignId}/session`,
-      query: { name, campaignName },
+      query: { name, clientId, campaignName },
     });
   };
 
