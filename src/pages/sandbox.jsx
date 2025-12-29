@@ -1,5 +1,4 @@
 import { CharacterCreator } from "@/components";
-import { useState, useEffect } from "react";
 
 export default function Sandbox() {
   return (

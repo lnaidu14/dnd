@@ -4,7 +4,6 @@ import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { InputSwitch } from "primereact/inputswitch";
 import { characterData, POINT_BUY_COSTS } from "@/data/constants";
@@ -110,7 +109,7 @@ export default function CharacterCreator({ universe }) {
 
   return (
     <div className="card flex justify-content-center">
-      <Card title="Character Creator">
+      <Card>
         <div className="flex flex-row gap-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="text-xl font-bold uppercase mb-2">

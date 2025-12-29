@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import io from "socket.io-client";
 import { Board, BoardControls } from "@/components";
 
+import { Button } from "primereact/button";
+
 export default function SessionPage() {
   const router = useRouter();
   const { id, name, campaignName } = router.query;
@@ -55,7 +57,7 @@ export default function SessionPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-3 text-sm">
           <BoardControls
             gridVisible={gridVisible}
             toggleGrid={toggleGrid}
@@ -66,12 +68,12 @@ export default function SessionPage() {
           <span className="text-gray-300">Players: {playerCount}</span>
           <span className="text-gray-300">DM: {dmName || "None"}</span>
 
-          <button
+          <Button
+            label="Leave"
             onClick={() => router.push("/")}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-          >
-            Leave
-          </button>
+            severity="danger"
+            className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white"
+          />
         </div>
       </div>
 
@@ -86,6 +88,3 @@ export default function SessionPage() {
     </div>
   );
 }
-
-
-
