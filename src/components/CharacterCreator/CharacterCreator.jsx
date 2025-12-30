@@ -322,21 +322,27 @@ export default function CharacterCreator({
                 value={selectedSkillProficiencies}
                 onChange={(e) => setSelectedSkillProficiencies(e.value)}
                 options={
-                  selectedCharacterClass?.skillChoices
-                    .filter(
-                      (name) =>
-                        !selectedBackground?.skillProficiencies?.includes(name)
-                    )
-                    .map((name) =>
-                      characterData.skills.find((s) => s.name === name)
-                    ) || []
+                  selectedCharacterClass
+                    ? selectedCharacterClass.skillChoices
+                        .filter(
+                          (name) =>
+                            !selectedBackground?.skillProficiencies?.includes(
+                              name
+                            )
+                        )
+                        .map((name) =>
+                          characterData.skills.find((s) => s.name === name)
+                        )
+                    : []
                 }
                 optionLabel="name"
                 maxSelectedLabels={3}
                 className="w-full"
                 selectionLimit={
-                  selectedCharacterClass.numberOfSkills -
-                  (selectedBackground?.skillProficiencies?.length || 0)
+                  selectedCharacterClass
+                    ? selectedCharacterClass.numberOfSkills -
+                      (selectedBackground?.skillProficiencies?.length || 0)
+                    : 0
                 }
               />
               <label htmlFor="skills">Skills</label>
