@@ -1,5 +1,5 @@
 import React from 'react'
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useRef } from "react";
 import { CampaignsContext } from "../../pages";
 import styles from "./CampaignsList.module.css";
 import { Button } from "primereact/button";

@@ -1,9 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { CharacterCreator, CharacterSheet } from "@/components";
 import { InputSwitch } from "primereact/inputswitch";
 import { Menu } from "primereact/menu";
+import { CharactersContext } from "../../pages/campaigns/[id]/session";
 
 export default function BoardControls({
   gridVisible,
@@ -12,6 +13,7 @@ export default function BoardControls({
   toggleSnapToGrid,
   campaignId,
 }) {
+  const { characters, setCharacters } = useContext(CharactersContext);
   const [isCharacterCreatorOpen, setIsCharacterCreatorOpen] = useState(false);
   const [isCharacterSheetOpen, setIsCharacterSheetOpen] = useState(false);
   const settingsMenuRef = useRef(null);
@@ -90,7 +92,11 @@ export default function BoardControls({
           setIsCharacterSheetOpen(false);
         }}
       >
-        <CharacterSheet characterId="679685e5-b717-408b-b2a0-35d3164d55a7" />
+        <CharacterSheet
+          character={characters.find(
+            (c) => c.id === "c2b79581-e344-4126-9f04-a1a8d47ea782"
+          )}
+        />
       </Dialog>
 
       <Button

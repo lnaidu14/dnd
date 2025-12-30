@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext } from "react";
 import { useRouter } from "next/router";
 import io from "socket.io-client";
 import { Board, BoardControls } from "@/components";
 import axios from "axios";
 import { Button } from "primereact/button";
+
+export const CharactersContext = createContext({
+  characters: [],
+  setCharacters: () => {},
+});
 
 export default function SessionPage() {
   const router = useRouter();
@@ -75,45 +80,47 @@ export default function SessionPage() {
   }, [id, name]);
 
   return (
-    <div className="w-screen h-screen bg-gray-900 text-gray-100 flex flex-col">
-      <div className="w-full p-3 bg-gray-800 border-b border-gray-700 flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-bold">
-            {campaignName || "Unnamed Campaign"}
-          </h1>
-          <p className="text-gray-400 text-sm">
-            {role ? `${role.toUpperCase()} view` : "Joining..."}
-          </p>
+    <CharactersContext.Provider value={{ characters, setCharacters }}>
+      <div className="w-screen h-screen bg-gray-900 text-gray-100 flex flex-col">
+        <div className="w-full p-3 bg-gray-800 border-b border-gray-700 flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold">
+              {campaignName || "Unnamed Campaign"}
+            </h1>
+            <p className="text-gray-400 text-sm">
+              {role ? `${role.toUpperCase()} view` : "Joining..."}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 text-sm">
+            <BoardControls
+              gridVisible={gridVisible}
+              toggleGrid={toggleGrid}
+              snapToGrid={snapToGrid}
+              toggleSnapToGrid={toggleSnapToGrid}
+              campaignId={id}
+            />
+            <span className="text-gray-300">Players: {playerCount}</span>
+            <span className="text-gray-300">DM: {dmName || "None"}</span>
+
+            <Button
+              label="Leave"
+              onClick={() => router.push("/")}
+              severity="danger"
+              className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center gap-3 text-sm">
-          <BoardControls
+        <div className="flex-1">
+          <Board
             gridVisible={gridVisible}
-            toggleGrid={toggleGrid}
             snapToGrid={snapToGrid}
-            toggleSnapToGrid={toggleSnapToGrid}
-            campaignId={id}
-          />
-          <span className="text-gray-300">Players: {playerCount}</span>
-          <span className="text-gray-300">DM: {dmName || "None"}</span>
-
-          <Button
-            label="Leave"
-            onClick={() => router.push("/")}
-            severity="danger"
-            className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white"
+            measurement={measurement}
+            setMeasurement={setMeasurement}
           />
         </div>
       </div>
-
-      <div className="flex-1">
-        <Board
-          gridVisible={gridVisible}
-          snapToGrid={snapToGrid}
-          measurement={measurement}
-          setMeasurement={setMeasurement}
-        />
-      </div>
-    </div>
+    </CharactersContext.Provider>
   );
 }
