@@ -112,7 +112,6 @@ export default function CampaignsList({ loading, error }) {
         ) : (
           <div className={styles.campaignGrid}>
             {campaigns.map((c) => {
-              console.log("c: ", c);
               return (
                 <div key={c.id} className={styles.campaignCard}>
                   <h3 className="text-lg font-semibold mb-1">{c.name}</h3>

@@ -10,7 +10,7 @@ export default function BoardControls({
   toggleGrid,
   snapToGrid,
   toggleSnapToGrid,
-  measurement,
+  campaignId,
 }) {
   const [isCharacterCreatorOpen, setIsCharacterCreatorOpen] = useState(false);
   const settingsMenuRef = useRef(null);
@@ -89,7 +89,7 @@ export default function BoardControls({
           setIsCharacterCreatorOpen(false);
         }}
       >
-        <CharacterCreator />
+        <CharacterCreator campaignId={campaignId} />
       </Dialog>
 
       <Menu

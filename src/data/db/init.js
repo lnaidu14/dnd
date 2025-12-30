@@ -28,6 +28,7 @@ export async function initDatabase() {
       character_class TEXT NOT NULL,
       subclass TEXT,
       background TEXT,
+      backstory TEXT,
       alignment TEXT,
 
       level INTEGER DEFAULT 1,
@@ -42,10 +43,13 @@ export async function initDatabase() {
       initiative_modifier INTEGER DEFAULT 0,
 
       ability_scores JSON,
+      ability_modifiers JSON,
+      proficiency_bonus INTEGER,
       saving_throws JSON,
       skills JSON,
       spell_save_dc INTEGER,
       spell_attack_bonus INTEGER,
+      
 
       death_saves JSON DEFAULT '{"success":0,"fail":0}',
       conditions JSON DEFAULT '[]',

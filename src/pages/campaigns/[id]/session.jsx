@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import io from "socket.io-client";
 import { Board, BoardControls } from "@/components";
-
+import axios from "axios";
 import { Button } from "primereact/button";
 
 export default function SessionPage() {
@@ -17,9 +17,38 @@ export default function SessionPage() {
   const [gridVisible, setGridVisible] = useState(true);
   const [snapToGrid, setSnapToGrid] = useState(true);
   const [measurement, setMeasurement] = useState(null);
+  const [characters, setCharacters] = useState([]);
 
   const toggleGrid = () => setGridVisible((prev) => !prev);
   const toggleSnapToGrid = () => setSnapToGrid((prev) => !prev);
+
+  useEffect(() => {
+    async function fetchCharacters(campaignId) {
+      const response = await axios.get("/api/characters", {
+        params: {
+          campaignId,
+        },
+      });
+
+      const parsedCharacters = response.data.characters.map((c) => ({
+        ...c,
+        ability_scores: JSON.parse(c.ability_scores),
+        ability_modifiers: JSON.parse(c.ability_modifiers),
+        saving_throws: JSON.parse(c.saving_throws),
+        skills: JSON.parse(c.skills),
+        conditions: JSON.parse(c.conditions),
+        inventory: JSON.parse(c.inventory),
+        spells_known: JSON.parse(c.spells_known),
+        spells_prepared: JSON.parse(c.spells_prepared),
+        spell_slots: JSON.parse(c.spell_slots),
+        death_saves: JSON.parse(c.death_saves),
+      }));
+
+      setCharacters(parsedCharacters);
+    }
+
+    if (id) fetchCharacters(id);
+  }, []);
 
   useEffect(() => {
     if (!id || !name) return;
@@ -63,7 +92,7 @@ export default function SessionPage() {
             toggleGrid={toggleGrid}
             snapToGrid={snapToGrid}
             toggleSnapToGrid={toggleSnapToGrid}
-            measurement={measurement}
+            campaignId={id}
           />
           <span className="text-gray-300">Players: {playerCount}</span>
           <span className="text-gray-300">DM: {dmName || "None"}</span>

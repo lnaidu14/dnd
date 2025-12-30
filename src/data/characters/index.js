@@ -7,30 +7,43 @@ export async function createCharacter(characterData) {
   const emptyArray = JSON.stringify([]);
 
   await db.run(
-        `INSERT INTO characters
+    `INSERT INTO characters
         (id, campaign_id, name, character_class, race, subclass, background, alignment, is_npc,
-        ability_scores, saving_throws, skills, death_saves, conditions, inventory, spells_known, spells_prepared, spell_slots)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          characterData.id,
-          characterData.campaign_id,
-          characterData.name,
-          characterData.character_class,
-          characterData.race || null,
-          characterData.subclass || null,
-          characterData.background || null,
-          characterData.alignment || null,
-          characterData.is_npc ? 1 : 0,
-          defaultJson,
-          defaultJson,
-          defaultJson,
-          '{"success":0,"fail":0}',
-          emptyArray,
-          emptyArray,
-          emptyArray,
-          emptyArray,
-          defaultJson,
-        ]
+        ability_scores, saving_throws, skills, death_saves, conditions, inventory, spells_known, spells_prepared, spell_slots,
+        level, max_hp, current_hp, backstory, spell_save_dc, spell_attack_bonus, armor_class, portrait, token_image, initiative_modifier, ability_modifiers, proficiency_bonus)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      characterData.id,
+      characterData.campaign_id,
+      characterData.name,
+      characterData.character_class,
+      characterData.race || "",
+      characterData.subclass || "",
+      characterData.background || "",
+      characterData.alignment || "",
+      characterData.is_npc ? 1 : 0,
+      JSON.stringify(characterData.ability_scores),
+      JSON.stringify(characterData.saving_throws),
+      defaultJson,
+      '{"success":0,"fail":0}',
+      emptyArray,
+      emptyArray,
+      emptyArray,
+      emptyArray,
+      defaultJson,
+      characterData.level,
+      characterData.max_hp,
+      characterData.current_hp,
+      characterData.backstory,
+      characterData.spell_save_dc,
+      characterData.spell_attack_bonus,
+      characterData.armor_class,
+      characterData.portrait,
+      characterData.token_image,
+      characterData.initiative_modifier,
+      JSON.stringify(characterData.ability_modifiers),
+      characterData.proficiency_bonus,
+    ]
   );
 
   const newCharacter = await db.get(`SELECT * FROM characters WHERE id = ?`, [
@@ -44,7 +57,8 @@ export async function createCharacter(characterData) {
 export async function getAllCharacters(campaignId) {
   const db = await initDatabase();
   const characters = await db.all(
-    "SELECT * FROM characters WHERE campaign_id = ?", [campaignId]
+    "SELECT * FROM characters WHERE campaign_id = ?",
+    [campaignId]
   );
   await db.close();
   return characters;
