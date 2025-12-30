@@ -1,63 +1,114 @@
-import React, { useState } from 'react';
-import styles from './BoardControls.module.css';
-import { FiSettings, FiGrid, FiMove, FiX } from "react-icons/fi";
-import { Dropdown } from "primereact/dropdown";
+import { useState, useRef } from "react";
+import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
+import { CharacterCreator } from "@/components";
+import { InputSwitch } from "primereact/inputswitch";
+import { Menu } from "primereact/menu";
 
 export default function BoardControls({
   gridVisible,
   toggleGrid,
   snapToGrid,
   toggleSnapToGrid,
-  measurement,
+  campaignId,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isCharacterCreatorOpen, setIsCharacterCreatorOpen] = useState(false);
+  const settingsMenuRef = useRef(null);
+  const settingsMenuItems = [
+    {
+      label: "Settings",
+      items: [
+        {
+          label: "Grid",
+          icon: "pi pi-table",
+          template: (item, options) => {
+            return (
+              <div
+                className="flex items-center w-full justify-between px-4 py-2 p-menuitem-content"
+                data-pc-section="content"
+                onMouseMove={(e) => options.onMouseMove(e)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <label htmlFor="grid" onClick={(e) => e.stopPropagation()}>
+                  Grid
+                </label>
+
+                <InputSwitch
+                  checked={gridVisible}
+                  onChange={toggleGrid}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            );
+          },
+        },
+        {
+          label: "Snap to Grid",
+          icon: "pi pi-arrows-alt",
+          template: (item, options) => {
+            return (
+              <div
+                className="flex items-center w-full justify-between px-4 py-2 p-menuitem-content"
+                data-pc-section="content"
+                onMouseMove={(e) => options.onMouseMove(e)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <label
+                  htmlFor="snap_to_grid"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Snap to Grid
+                </label>
+                <InputSwitch
+                  onChange={toggleSnapToGrid}
+                  checked={snapToGrid}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            );
+          },
+        },
+      ],
+    },
+  ];
 
   return (
-    <div className={`${styles.controlsContainer} ${isOpen ? styles.open : ""}`}>
-      <button
-        className={styles.toggleButton}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={isOpen ? "Close settings" : "Open settings"}
+    <div className="relative inline-flex items-center gap-2">
+      <Button
+        icon="pi pi-plus"
+        onClick={() => setIsCharacterCreatorOpen(true)}
+        rounded
+        severity="success"
+      />
+      <Dialog
+        header="Character Creator"
+        visible={isCharacterCreatorOpen}
+        style={{ width: "60vw" }}
+        onHide={() => {
+          if (!isCharacterCreatorOpen) return;
+          setIsCharacterCreatorOpen(false);
+        }}
       >
-        {isOpen ? <FiX size={20} /> : <FiSettings size={20} />}
-      </button>
+        <CharacterCreator
+          campaignId={campaignId}
+          setIsCharacterCreatorOpen={setIsCharacterCreatorOpen}
+        />
+      </Dialog>
 
-      <div className={styles.panel}>
-        <div className={styles.panelContent}>
-          <h3 className={styles.panelTitle}>Board Settings</h3>
-          <div className={styles.controlGroup}>
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={gridVisible}
-                onChange={toggleGrid}
-              />
-              <span className={styles.toggleSlider}></span>
-              <span className={styles.toggleLabel}>
-                <FiGrid /> Grid
-              </span>
-            </label>
-
-            <label className={styles.toggle}>
-              <input
-                type="checkbox"
-                checked={snapToGrid}
-                onChange={toggleSnapToGrid}
-              />
-              <span className={styles.toggleSlider}></span>
-              <span className={styles.toggleLabel}>
-                <FiMove /> Snap to Grid
-              </span>
-            </label>
-          </div>
-
-          {measurement && (
-            <div className={styles.measurementDisplay}>
-              Distance: {measurement} ft
-            </div>
-          )}
-        </div>
-      </div>
+      <Menu
+        model={settingsMenuItems}
+        popup
+        ref={settingsMenuRef}
+        id="popup_menu_left"
+      />
+      <Button
+        icon="pi pi-cog"
+        onClick={(event) => settingsMenuRef.current.toggle(event)}
+        aria-controls="popup_menu_left"
+        aria-haspopup
+        rounded
+        severity="secondary"
+      />
     </div>
   );
 }

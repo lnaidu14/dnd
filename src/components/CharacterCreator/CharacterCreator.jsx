@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { InputSwitch } from "primereact/inputswitch";
+import { Toast } from "primereact/toast";
 import { characterData, POINT_BUY_COSTS } from "@/data/constants";
 import {
   calculateMaxHP,
@@ -17,8 +17,13 @@ import {
   calculateSavingThrows,
 } from "@/data/dndHelpers";
 import { Portrait } from "@/components";
+import axios from "axios";
+import { ProgressSpinner } from "primereact/progressspinner";
 
-export default function CharacterCreator({ universe }) {
+export default function CharacterCreator({
+  campaignId,
+  setIsCharacterCreatorOpen,
+}) {
   const [name, setName] = useState("");
   const [backstory, setBackStory] = useState("");
   const [selectedRace, setSelectedRace] = useState(null);
@@ -36,9 +41,31 @@ export default function CharacterCreator({ universe }) {
     WIS: 8,
     CHA: 8,
   });
+  const [isCreating, setIsCreating] = useState(false);
+  const toast = useRef(null);
 
   const pointsSpent = calculatePointBuyTotal(stats);
   const pointsRemaining = 27 - pointsSpent;
+
+  const createCharacter = async (character) => {
+    try {
+      const response = await axios.post("/api/characters", character);
+      toast.current.show({
+        severity: "success",
+        summary: "Created",
+        detail: "Character created successfully!",
+        life: 3000,
+      });
+      return response.data.character;
+    } catch (err) {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to create character",
+        life: 3000,
+      });
+    }
+  };
 
   const updateStat = (ability, newValue) => {
     if (newValue < 8 || newValue > 15) return;
@@ -54,8 +81,9 @@ export default function CharacterCreator({ universe }) {
     setStats({ ...stats, [ability]: newValue });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsCreating(true);
 
     const finalStats = selectedRace
       ? applyRacialBonuses(stats, selectedRace)
@@ -77,15 +105,16 @@ export default function CharacterCreator({ universe }) {
       : 0;
 
     const character = {
+      campaign_id: campaignId,
       name,
       level,
       race: selectedRace?.name,
-      class: selectedCharacterClass?.name,
+      character_class: selectedCharacterClass?.name,
+      subclass: "",
       background: selectedBackground?.name,
       alignment: selectedAlignment?.name,
-      stats: finalStats,
-      modifiers: abilityModifiers,
-      proficiencyBonus: proficiencyBonus(level),
+      ability_modifiers: abilityModifiers,
+      proficiency_bonus: proficiencyBonus(level),
       initiative_modifier: abilityModifiers["DEX"],
       speed: selectedRace.speed,
       max_hp: maxHp,
@@ -105,12 +134,18 @@ export default function CharacterCreator({ universe }) {
       token_image: selectedImageUrl,
     };
 
-    console.log("Created Character:", character);
+    const createdCharacter = await createCharacter(character);
+    if (createdCharacter) {
+      setIsCreating(false);
+      setIsCharacterCreatorOpen(false);
+    }
   };
 
   return (
     <div className="card flex justify-content-center">
-      <Card title="Character Creator">
+      {isCreating ? <ProgressSpinner /> : <></>}
+      <Toast ref={toast} />
+      <Card>
         <div className="flex flex-row gap-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="text-xl font-bold uppercase mb-2">
