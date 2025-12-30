@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { CharacterCreator } from "@/components";
+import { CharacterCreator, CharacterSheet } from "@/components";
 import { InputSwitch } from "primereact/inputswitch";
 import { Menu } from "primereact/menu";
 
@@ -13,6 +13,7 @@ export default function BoardControls({
   campaignId,
 }) {
   const [isCharacterCreatorOpen, setIsCharacterCreatorOpen] = useState(false);
+  const [isCharacterSheetOpen, setIsCharacterSheetOpen] = useState(false);
   const settingsMenuRef = useRef(null);
   const settingsMenuItems = [
     {
@@ -74,6 +75,24 @@ export default function BoardControls({
 
   return (
     <div className="relative inline-flex items-center gap-2">
+      <Button
+        icon="pi pi-search"
+        onClick={() => setIsCharacterSheetOpen(true)}
+        rounded
+        severity="success"
+      />
+      <Dialog
+        header="Character Sheet"
+        visible={isCharacterSheetOpen}
+        style={{ width: "60vw" }}
+        onHide={() => {
+          if (!isCharacterSheetOpen) return;
+          setIsCharacterSheetOpen(false);
+        }}
+      >
+        <CharacterSheet characterId="679685e5-b717-408b-b2a0-35d3164d55a7" />
+      </Dialog>
+
       <Button
         icon="pi pi-plus"
         onClick={() => setIsCharacterCreatorOpen(true)}

@@ -6,3 +6,4 @@ export { default as BoardControls } from "./BoardControls/BoardControls";
 export { default as DiceRoller } from "./DiceRoller/DiceRoller";
 export { default as CharacterCreator } from "./CharacterCreator/CharacterCreator";
 export { default as Portrait } from "./Portrait/Portrait";
+export { default as CharacterSheet } from "./CharacterSheet/CharacterSheet";
