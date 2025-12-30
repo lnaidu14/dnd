@@ -31,6 +31,7 @@ export default async function handler(req, res) {
           initiative_modifier,
           skills,
           skill_proficiencies,
+          exp,
         } = req.body;
 
         if (!campaign_id || !name || !character_class) {
@@ -66,6 +67,7 @@ export default async function handler(req, res) {
           initiative_modifier,
           skills,
           skill_proficiencies,
+          exp,
         });
 
         console.info("Character created: ", newCharacter);

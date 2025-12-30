@@ -11,8 +11,8 @@ export async function createCharacter(characterData) {
         (id, campaign_id, name, character_class, race, subclass, background, alignment, is_npc,
         ability_scores, saving_throws, skills, death_saves, conditions, inventory, spells_known, spells_prepared, spell_slots,
         level, max_hp, current_hp, backstory, spell_save_dc, spell_attack_bonus, armor_class, portrait, token_image, initiative_modifier, ability_modifiers, proficiency_bonus,
-        skill_proficiencies)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        skill_proficiencies, exp)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       characterData.id,
       characterData.campaign_id,
@@ -45,6 +45,7 @@ export async function createCharacter(characterData) {
       JSON.stringify(characterData.ability_modifiers),
       characterData.proficiency_bonus,
       JSON.stringify(characterData.skill_proficiencies),
+      characterData.exp,
     ]
   );
 

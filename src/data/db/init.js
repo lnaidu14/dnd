@@ -23,6 +23,7 @@ export async function initDatabase() {
       name TEXT NOT NULL,
       portrait TEXT,
       token_image TEXT,
+      exp TEXT DEFAULT 0,
       
       race TEXT,
       character_class TEXT NOT NULL,

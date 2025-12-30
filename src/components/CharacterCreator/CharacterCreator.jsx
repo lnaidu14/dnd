@@ -145,6 +145,7 @@ export default function CharacterCreator({
       token_image: selectedImageUrl,
       skills,
       skill_proficiencies: selectedSkillProficiencies,
+      exp: "0",
     };
 
     const createdCharacter = await createCharacter(character);
