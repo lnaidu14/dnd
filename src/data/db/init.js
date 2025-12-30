@@ -47,6 +47,7 @@ export async function initDatabase() {
       proficiency_bonus INTEGER,
       saving_throws JSON,
       skills JSON,
+      skill_proficiencies JSON,
       spell_save_dc INTEGER,
       spell_attack_bonus INTEGER,
       

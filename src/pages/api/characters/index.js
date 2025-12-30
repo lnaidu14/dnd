@@ -29,6 +29,8 @@ export default async function handler(req, res) {
           portrait,
           token_image,
           initiative_modifier,
+          skills,
+          skill_proficiencies,
         } = req.body;
 
         if (!campaign_id || !name || !character_class) {
@@ -62,6 +64,8 @@ export default async function handler(req, res) {
           portrait,
           token_image,
           initiative_modifier,
+          skills,
+          skill_proficiencies,
         });
 
         console.info("Character created: ", newCharacter);

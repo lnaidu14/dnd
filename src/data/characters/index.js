@@ -10,8 +10,9 @@ export async function createCharacter(characterData) {
     `INSERT INTO characters
         (id, campaign_id, name, character_class, race, subclass, background, alignment, is_npc,
         ability_scores, saving_throws, skills, death_saves, conditions, inventory, spells_known, spells_prepared, spell_slots,
-        level, max_hp, current_hp, backstory, spell_save_dc, spell_attack_bonus, armor_class, portrait, token_image, initiative_modifier, ability_modifiers, proficiency_bonus)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        level, max_hp, current_hp, backstory, spell_save_dc, spell_attack_bonus, armor_class, portrait, token_image, initiative_modifier, ability_modifiers, proficiency_bonus,
+        skill_proficiencies)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       characterData.id,
       characterData.campaign_id,
@@ -24,7 +25,7 @@ export async function createCharacter(characterData) {
       characterData.is_npc ? 1 : 0,
       JSON.stringify(characterData.ability_scores),
       JSON.stringify(characterData.saving_throws),
-      defaultJson,
+      JSON.stringify(characterData.skills),
       '{"success":0,"fail":0}',
       emptyArray,
       emptyArray,
@@ -43,6 +44,7 @@ export async function createCharacter(characterData) {
       characterData.initiative_modifier,
       JSON.stringify(characterData.ability_modifiers),
       characterData.proficiency_bonus,
+      JSON.stringify(characterData.skill_proficiencies),
     ]
   );
 

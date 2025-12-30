@@ -15,10 +15,12 @@ import {
   applyRacialBonuses,
   proficiencyBonus,
   calculateSavingThrows,
+  calculateSkills,
 } from "@/data/dndHelpers";
 import { Portrait } from "@/components";
 import axios from "axios";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { MultiSelect } from "primereact/multiselect";
 
 export default function CharacterCreator({
   campaignId,
@@ -42,6 +44,9 @@ export default function CharacterCreator({
     CHA: 8,
   });
   const [isCreating, setIsCreating] = useState(false);
+  const [selectedSkillProficiencies, setSelectedSkillProficiencies] = useState(
+    []
+  );
   const toast = useRef(null);
 
   const pointsSpent = calculatePointBuyTotal(stats);
@@ -104,6 +109,12 @@ export default function CharacterCreator({
         abilityModifiers[selectedCharacterClass["spellcastingAbility"]]
       : 0;
 
+    const skills = calculateSkills(
+      abilityModifiers,
+      level,
+      selectedSkillProficiencies
+    );
+
     const character = {
       campaign_id: campaignId,
       name,
@@ -132,6 +143,8 @@ export default function CharacterCreator({
       ),
       portrait: selectedImageUrl,
       token_image: selectedImageUrl,
+      skills,
+      skill_proficiencies: selectedSkillProficiencies,
     };
 
     const createdCharacter = await createCharacter(character);
@@ -301,6 +314,33 @@ export default function CharacterCreator({
                 Points Remaining: {pointsRemaining}
               </strong>
             </div>
+
+            <FloatLabel className="w-full md:w-20rem">
+              <MultiSelect
+                id="skills"
+                display="chip"
+                value={selectedSkillProficiencies}
+                onChange={(e) => setSelectedSkillProficiencies(e.value)}
+                options={
+                  selectedCharacterClass?.skillChoices
+                    .filter(
+                      (name) =>
+                        !selectedBackground?.skillProficiencies?.includes(name)
+                    )
+                    .map((name) =>
+                      characterData.skills.find((s) => s.name === name)
+                    ) || []
+                }
+                optionLabel="name"
+                maxSelectedLabels={3}
+                className="w-full"
+                selectionLimit={
+                  selectedCharacterClass.numberOfSkills -
+                  (selectedBackground?.skillProficiencies?.length || 0)
+                }
+              />
+              <label htmlFor="skills">Skills</label>
+            </FloatLabel>
 
             <FloatLabel>
               <InputTextarea

@@ -1,7 +1,6 @@
-import { POINT_BUY_COSTS } from './constants';
+import { POINT_BUY_COSTS, characterData } from "./constants";
 
-export const abilityModifier = (score) =>
-  Math.floor((score - 10) / 2);
+export const abilityModifier = (score) => Math.floor((score - 10) / 2);
 
 export const proficiencyBonus = (level) => {
   if (level >= 17) return 6;
@@ -62,6 +61,26 @@ export const calculateSavingThrows = (
     Object.entries(abilityModifiers).map(([ability, mod]) => {
       const isProficient = savingThrowProficiencies.includes(ability);
       return [ability, mod + (isProficient ? profBonus : 0)];
+    })
+  );
+};
+
+export const calculateSkills = (
+  abilityModifiers,
+  level,
+  skillProficiencies = [],
+  skillBonuses = {}
+) => {
+  const profBonus = proficiencyBonus(level);
+
+  return Object.fromEntries(
+    characterData.skills.map(({ name, ability }) => {
+      const base = abilityModifiers[ability];
+      const prof = skillProficiencies.some((s) => s.name === name)
+        ? profBonus
+        : 0;
+      const bonus = skillBonuses[name] ?? 0;
+      return [name, base + prof + bonus];
     })
   );
 };
