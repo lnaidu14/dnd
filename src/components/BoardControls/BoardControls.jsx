@@ -89,7 +89,10 @@ export default function BoardControls({
           setIsCharacterCreatorOpen(false);
         }}
       >
-        <CharacterCreator campaignId={campaignId} />
+        <CharacterCreator
+          campaignId={campaignId}
+          setIsCharacterCreatorOpen={setIsCharacterCreatorOpen}
+        />
       </Dialog>
 
       <Menu

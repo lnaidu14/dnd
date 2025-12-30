@@ -18,8 +18,12 @@ import {
 } from "@/data/dndHelpers";
 import { Portrait } from "@/components";
 import axios from "axios";
+import { ProgressSpinner } from "primereact/progressspinner";
 
-export default function CharacterCreator({ campaignId }) {
+export default function CharacterCreator({
+  campaignId,
+  setIsCharacterCreatorOpen,
+}) {
   const [name, setName] = useState("");
   const [backstory, setBackStory] = useState("");
   const [selectedRace, setSelectedRace] = useState(null);
@@ -37,6 +41,7 @@ export default function CharacterCreator({ campaignId }) {
     WIS: 8,
     CHA: 8,
   });
+  const [isCreating, setIsCreating] = useState(false);
   const toast = useRef(null);
 
   const pointsSpent = calculatePointBuyTotal(stats);
@@ -51,8 +56,8 @@ export default function CharacterCreator({ campaignId }) {
         detail: "Character created successfully!",
         life: 3000,
       });
+      return response.data.character;
     } catch (err) {
-      console.error(err);
       toast.current.show({
         severity: "error",
         summary: "Error",
@@ -78,6 +83,7 @@ export default function CharacterCreator({ campaignId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsCreating(true);
 
     const finalStats = selectedRace
       ? applyRacialBonuses(stats, selectedRace)
@@ -128,11 +134,16 @@ export default function CharacterCreator({ campaignId }) {
       token_image: selectedImageUrl,
     };
 
-    await createCharacter(character);
+    const createdCharacter = await createCharacter(character);
+    if (createdCharacter) {
+      setIsCreating(false);
+      setIsCharacterCreatorOpen(false);
+    }
   };
 
   return (
     <div className="card flex justify-content-center">
+      {isCreating ? <ProgressSpinner /> : <></>}
       <Toast ref={toast} />
       <Card>
         <div className="flex flex-row gap-6">
