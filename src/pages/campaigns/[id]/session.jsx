@@ -41,6 +41,7 @@ export default function SessionPage() {
         ability_modifiers: JSON.parse(c.ability_modifiers),
         saving_throws: JSON.parse(c.saving_throws),
         skills: JSON.parse(c.skills),
+        skill_proficiencies: JSON.parse(c.skill_proficiencies),
         conditions: JSON.parse(c.conditions),
         inventory: JSON.parse(c.inventory),
         spells_known: JSON.parse(c.spells_known),
